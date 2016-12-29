@@ -1,0 +1,85 @@
+.glyphicon.glyphicon-wrench, .glyphicon.glyphicon-fire, .glyphicon.glyphicon-ok
+	{
+	color: #f26522;
+	font-size: 100px;
+}
+
+.glyphicon.glyphicon-chevron-left, .glyphicon.glyphicon-chevron-right {
+	color: #f26522;
+}
+
+html {
+	position: relative;
+	min-height: 100%;
+}
+
+body {
+	/* Margin bottom by footer height */
+	margin-bottom: 150px;
+}
+
+.footer{
+position: absolute;
+	bottom: 0;
+	width: 100%;
+	 line-height: 50px;
+	text-align: center;
+	
+	/* Set the fixed height of the footer here */
+	height: 50px;
+	background-color: #d3d3d3;
+}
+
+
+
+.navbar .navbar-nav>li>a:hover, .navbar .navbar-nav>li>a:focus {
+	color: #f26522;
+}
+
+.navbar .navbar-nav>.active>a, .navbar .navbar-nav>.active>a:hover,
+	.navbar .navbar-nav>.active>a:focus {
+	color: #f26522;
+	background-color: #000000;
+}
+
+.navbar .navbar-toggle {
+	border-color: #f26522;
+}
+
+.navbar .navbar-toggle:hover, .navbar .navbar-toggle:focus {
+	background-color: #f26522;
+}
+
+#fa_color {
+	color: #f26522;
+	font-size: 1.5em;
+}
+
+video {
+    position:relative;
+    z-index:-1;
+    
+}
+
+#custom-message {
+    position:absolute;
+    color: #E7E7E7;
+	font-size: 30px;
+    z-index:1;      
+}
+
+.category {
+	
+    text-transform: uppercase;
+}
+.btn-xl {
+    padding: 30px 50px;
+    font-size: 15px;
+    border-radius: 70px;
+}
+
+.image {
+    opacity: 0.4;
+    filter: alpha(opacity=40); /* For IE8 and earlier */
+}
+​
