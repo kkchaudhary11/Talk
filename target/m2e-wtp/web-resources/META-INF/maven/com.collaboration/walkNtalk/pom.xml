@@ -63,19 +63,15 @@
    
   </dependency>
   
-  <dependency>
-    <groupId>com.h2database</groupId>
-    <artifactId>h2</artifactId>
-    <version>1.4.192</version>
-</dependency>
+ 
  
  
  	<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
-<dependency>
-    <groupId>org.hibernate</groupId>
-    <artifactId>hibernate-core</artifactId>
-    <version>5.2.4.Final</version>
-</dependency>
+	<dependency>
+	    <groupId>org.hibernate</groupId>
+	    <artifactId>hibernate-core</artifactId>
+	    <version>5.2.4.Final</version>
+	</dependency>
 
    
   	<dependency>
@@ -118,6 +114,26 @@
 			<artifactId>spring-security-config</artifactId>
 			<version>4.0.0.RELEASE</version>
 		</dependency>
+		
+		 <dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.1.0.Final</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>5.0.1.Final</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+		
+		
     
   </dependencies>
   <build>

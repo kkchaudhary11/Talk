@@ -24,7 +24,7 @@
 		<!-- Override default login and logout pages -->
 		<security:form-login login-page="/index"
 			username-parameter="username" password-parameter="password"
-			default-target-url="/index" authentication-failure-url="/loginpage?error=1" />
+			default-target-url="/index" authentication-failure-url="/index?error=1" />
 	<!-- 	<security:logout logout-url="/logout"
 			logout-success-url="/loginpage?logout" /> -->
 			
@@ -38,8 +38,8 @@
 			<!--  <security:password-encoder hash="bcrypt" /> -->
 			<security:jdbc-user-service
 				data-source-ref="dataSource"
-				users-by-username-query="select username,password,enabled from userprofile where username=?"
-				authorities-by-username-query="SELECT a.USERNAME,b.ROLENAME FROM USERPROFILE a , USERROLE b where a.ROLE = b.ROLE and a.USERNAME=?;" />
+				users-by-username-query="select username, password, enabled from userdetails where username = ?"
+				authorities-by-username-query="select username, role from userdetails where username = ?" />
 
 		</security:authentication-provider>
 	</security:authentication-manager>

@@ -7,19 +7,26 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
+
 
 @Entity
-@Table(name="UserProfile", schema="kkc")
+@Table(name="UserDetails", schema="kkc")
 public class User {
 	
 	@Id @GeneratedValue(strategy=GenerationType.SEQUENCE)
-	private int userId;
-	private String username;
+	private long userId;
+	@NotEmpty(message="This field cannnot be empty")
+	private String username;	
+	@Length(max= 20, min=8, message="Password should be between 8 to 20 characters")
 	private String password;
 	@Transient
 	private String cpassword;
+	@NotEmpty(message="This field cannnot be empty")
 	private String email;
 	private String city;
+	@Length(max= 10, min=10, message="Phone number is not valid. Should be lenght 10")
 	private String phone;
 	private String dob;
 	private String gender;
@@ -31,7 +38,7 @@ public class User {
 	public String getUsername() {
 		return username;
 	}
-	public int getUserId() {
+	public long getUserId() {
 		return userId;
 	}
 	public void setUserId(int userId) {
@@ -75,9 +82,7 @@ public class User {
 	}
 	public void setDob(String dob) {
 		this.dob = dob;
-	}
-	
-	
+	}	
 	public String getGender() {
 		return gender;
 	}
