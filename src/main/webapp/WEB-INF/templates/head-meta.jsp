@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Walk & Talk</title>
 
-<link rel="shortcut icon" href="resources/images/logo.png" />
+<link rel="shortcut icon" href="resources/images/logomin.png" />
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 

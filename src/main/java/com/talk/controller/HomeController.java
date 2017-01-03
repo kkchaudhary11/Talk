@@ -62,7 +62,7 @@ public class HomeController {
 				}
 				if (usermatch == false) {
 					userdao.addUser(user);
-					model.addObject("User", new User());
+					model.addObject("user", new User());
 					model.addObject("success", "success");
 				} else {
 					model.addObject("useralreadyexists", "useralreadyexists");
@@ -73,6 +73,12 @@ public class HomeController {
 		}
 		return model;
 
+	}
+	
+	@RequestMapping("/userprofile")
+	public String userProfile(){
+		
+		return "userprofile";
 	}
 
 }

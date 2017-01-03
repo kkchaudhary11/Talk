@@ -15,14 +15,14 @@ html {
 
 body {
 	/* Margin bottom by footer height */
-	margin-bottom: 150px;
+	margin-bottom: 130px;
 }
 
 .footer{
 position: absolute;
 	bottom: 0;
 	width: 100%;
-	 line-height: 30px;
+	 line-height: 50px;
 	text-align: center;
 	
 	/* Set the fixed height of the footer here */

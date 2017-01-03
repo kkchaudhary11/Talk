@@ -17,6 +17,12 @@
 	<div class="container">
 		<h1>Login</h1>
 
+		<div class="col-md-12" align="right">
+		<a href="aboutus" title="About Us"><i
+					class="fa fa-info-circle fa-2x" aria-hidden="true"></i></a>
+		</div>
+		
+		
 		<div class="col-md-12">
 			<div class="col-md-6">
 
@@ -32,11 +38,7 @@
 				</c:if>
 
 			</div>
-			<div class="col-md-6" align="right">
-
-				<a href="aboutus" title="About Us"><i
-					class="fa fa-info-circle fa-2x" aria-hidden="true"></i></a>
-
+			<div class="col-md-6" >
 			</div>
 		</div>
 
