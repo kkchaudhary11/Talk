@@ -8,7 +8,8 @@ public interface UserDAO {
 	
 	public void addUser(User user);
 	public void deleteUser(int id);
-	public void updateUser(int id);
+	public void updateUser(User user);
 	public User getUserById(int id);
+	public User getUserByEmail(String email);
 	public List<User> listUser();
 }

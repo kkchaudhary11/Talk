@@ -9,11 +9,7 @@
 <body>
 
 	<div class="container">
-		<h1>About Us</h1>
-		<div class="col-md-12" align="right">
-			<a href="index" title="Home"><i class="fa fa-home fa-2x"
-				aria-hidden="true"></i></a>
-		</div>
+		<%@ include file="../templates/header.jsp"%>
 	</div>
 	
 	<div class="container">

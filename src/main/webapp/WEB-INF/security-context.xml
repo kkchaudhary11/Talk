@@ -38,8 +38,8 @@
 			<!--  <security:password-encoder hash="bcrypt" /> -->
 			<security:jdbc-user-service
 				data-source-ref="dataSource"
-				users-by-username-query="select username, password, enabled from userdetails where username = ?"
-				authorities-by-username-query="select username, role from userdetails where username = ?" />
+				users-by-username-query="select email, password, enabled from userdetails where email = ?"
+				authorities-by-username-query="select email, role from userdetails where email = ?" />
 
 		</security:authentication-provider>
 	</security:authentication-manager>

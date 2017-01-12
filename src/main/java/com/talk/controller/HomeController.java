@@ -1,10 +1,13 @@
 package com.talk.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -35,6 +38,17 @@ public class HomeController {
 
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public ModelAndView index() {
+		
+		String username = null;
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && !auth.getName().equals("anonymousUser")) {
+			System.out.println(auth.getName());
+			// System.out.println("User present");
+			username = auth.getName();
+			ModelAndView m = new ModelAndView("userprofile");
+			return m;
+		} 
+		
 		ModelAndView model = new ModelAndView("index");
 		model.addObject("user", new User());
 		return model;
@@ -72,13 +86,49 @@ public class HomeController {
 			}
 		}
 		return model;
-
 	}
 	
 	@RequestMapping("/userprofile")
-	public String userProfile(){
+	public ModelAndView User(Principal p){
 		
-		return "userprofile";
+		if(p!=null){
+			ModelAndView model = new ModelAndView("userprofile");
+			return model;
+		}
+		
+		
+		ModelAndView model = new ModelAndView("index");
+		model.addObject("user", new User());
+		return model;
+		
 	}
+	
+/*	@RequestMapping("/userprofile")
+	public ModelAndView userProfile(Principal principal){
+		
+		ModelAndView model = new ModelAndView("userprofile");
+		//username is email-id of the user
+		String username = principal.getName();
+		
+		System.out.println(username);
+		User user = userdao.getUserByEmail(username);
+		
+		if(user != null ){
+			
+			model.addObject("name",user.getUsername());
+			model.addObject("email",user.getEmail());
+
+			model.addObject("dob",user.getDob());
+
+			model.addObject("phone",user.getPhone());
+
+			model.addObject("city",user.getCity());
+
+			model.addObject("gender",user.getGender());
+			
+		}
+		
+		return model;
+	}*/
 
 }

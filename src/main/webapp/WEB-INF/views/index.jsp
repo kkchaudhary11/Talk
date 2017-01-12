@@ -12,15 +12,22 @@
 
 
 </head>
+
+
 <body>
 
 	<div class="container">
-		<h1>Login</h1>
+	
+	<%@ include file="../templates/header.jsp"%>
+	
+<!-- 	<h1>
+		Login
 
-		<div class="col-md-12" align="right">
-		<a href="aboutus" title="About Us"><i
-					class="fa fa-info-circle fa-2x" aria-hidden="true"></i></a>
-		</div>
+	
+		<a href="aboutus" title="About Us" style="float:right"><i
+					class="fa fa-info-circle " aria-hidden="true"></i></a>
+					</h1> -->
+	
 		
 		
 		<div class="col-md-12">
@@ -91,7 +98,7 @@
 
 				<c:if test="${not empty useralreadyexists}">
 					<p class="alert alert-danger">
-						<b>OOPS!</b>&nbsp Username Already Exists
+						<b>OOPS!</b>&nbsp Email Already Exists
 					</p>
 				</c:if>
 
