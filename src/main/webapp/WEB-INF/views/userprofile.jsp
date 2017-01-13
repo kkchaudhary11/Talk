@@ -20,6 +20,31 @@
 
 <script>
 	var myApp = angular.module("myApp", []);
+	
+	
+///////////////////////////////////////
+	myApp.service('fileUpload', ['$http', function ($http) {
+	    this.uploadFileToUrl = function(file, paramuser, uploadUrl){
+	        var fd = new FormData();
+	        fd.append('file', file);
+	        //fd.append('user','vasudev89');
+	        return $http.post(uploadUrl, fd, {
+	            transformRequest: angular.identity,
+	            headers: {'Content-Type': undefined , user: paramuser}
+	        })
+	        .then(
+                    function(response){
+                        return response.data;
+                    }, 
+                    function(errResponse){
+                        console.error('Error while updating User');
+                        return "error";
+                    }
+            );
+	    }
+	}]);
+	
+///////////////////////////////////////
 
 	myApp.factory("UserService", [
 			"$http",
@@ -38,7 +63,7 @@
 									return $q.reject(errResponse);
 								});
 					},
-					
+
 					updateUser : function(item) {
 						return $http.post(target_url + 'updateuser', item)
 								.then(function(response) {
@@ -48,12 +73,19 @@
 									return $q.reject(errResponse);
 								});
 					},
-					
-					
-					
 
 					deleteUser : function(item) {
 						return $http.post(target_url + 'deleteuser', item)
+								.then(function(response) {
+									return response.data;
+								}, function(errResponse) {
+									console.error('Error while sending data');
+									return $q.reject(errResponse);
+								});
+					},
+					
+					updatePassword : function(item) {
+						return $http.post(target_url + 'updatepassword', item)
 								.then(function(response) {
 									return response.data;
 								}, function(errResponse) {
@@ -73,79 +105,228 @@
 				};
 			} ]);
 
-	myApp.controller("myCtrl", [ "$scope", "UserService",
-			function($scope, $UserService) {
-		
+	myApp
+			.controller(
+					"myCtrl",
+					[
+							"$scope",
+							"UserService",
+							function($scope, $UserService,$fileUpload) {
+
+								$UserService
+										.userData()
+										.then(
+												function(response) {
+													//console.log(response);
+													$scope.userdetails = response;
+												},
+												function(errResponse) {
+													console
+															.log('Error fetching User Details');
+												});
+
+								$scope.updateUser = function() {
+
+									$scope.UserData = {
+										UserId : $scope.userdetails.userId,
+										Username : $scope.userdetails.username,
+										Phone : $scope.userdetails.phone,
+										City : $scope.userdetails.city,
+										DOB : $scope.userdetails.dob,
+										Gender : $scope.userdetails.gender
+
+									};
+									console.log($scope.UserData);
+									console.log("in the update user");
+
+									$UserService
+											.updateUser($scope.UserData)
+											.then(
+													function(response) {
+														try {
+															$scope.status = response;
+														} catch (e) {
+															$scope.data = [];
+														}
+
+													},
+													function(errResponse) {
+														console
+																.error('Error while Sending Data.');
+													});
+								}
+
+								$scope.deleteUser = function(userId) {
+									$UserService
+											.deleteUser(userId)
+											.then(
+													function(response) {
+														try {
+															$scope.allusers = response;
+														} catch (e) {
+															$scope.data = [];
+														}
+														/* 		console.log($scope.allusers); */
+													},
+													function(errResponse) {
+														console
+																.error('Error while Sending Data.');
+													});
+								}
+
+								$scope.updatePassword = function() {
+																			
+										console.log("in the update password update");
+
+										$UserService
+												.updatePassword( $scope.userdetails.newpassword)
+												.then(
+														function(response) {
+															try {
+																$scope.status = response;
+															} catch (e) {
+																$scope.data = [];
+															}
+
+														},
+														function(errResponse) {
+															console
+																	.error('Error while Sending Data.');
+														});
 
 
-				$UserService.userData().then(function(response) {
-					//console.log(response);
-					$scope.userdetails = response;
-				}, function(errResponse) {
-					console.log('Error fetching User Details');
-				});
-				
-				$scope.updateUser = function() {
-					
-				$scope.UserData = 	{ 
-							UserId: $scope.userdetails.userId,
-							Username: $scope.userdetails.username,
-							Phone: $scope.userdetails.phone,
-							City: $scope.userdetails.city,
-							DOB: $scope.userdetails.dob,
-							Gender: $scope.userdetails.gender
-							
-						}; 
-					console.log($scope.UserData); 
-					console.log("in the update user"); 
-					
-					$UserService.updateUser($scope.UserData).then(function(response) {
-						try {
-							$scope.status = response;
-						} catch (e) {
-							$scope.data = [];
-						}
-						
-					}, function(errResponse) {
-						console.error('Error while Sending Data.');
-					});
-				}
+								}
 
-				$scope.deleteUser = function(userId) {
-					$UserService.deleteUser(userId).then(function(response) {
-						try {
-							$scope.allusers = response;
-						} catch (e) {
-							$scope.data = [];
-						}
-				/* 		console.log($scope.allusers); */
-					}, function(errResponse) {
-						console.error('Error while Sending Data.');
-					});
-				}
+								$scope.getAllUsers = function() {
+									$UserService
+											.getAllUsers()
+											.then(
+													function(response) {
 
-				$scope.getAllUsers = function() {
-					$UserService.getAllUsers().then(function(response) {
+														$scope.allusers = response;
+													},
+													function(errResponse) {
+														console
+																.log('Error fetching Users');
+													});
+								}
+								
+								
+								$scope.openFileChooser = function()
+								{
+									$('#trigger').trigger('click');
+								};
+								
+								$scope.picUpdated = false;
+								$scope.picUpdatedWithError = false;
+								$scope.invalidPicType = false;
+								
+								$scope.picDeleted = false;
+								
+								$scope.setFile = function(element){
+									
+									$scope.currentFile = element.files[0];
+									
+									var extension = $scope.currentFile.name.substring($scope.currentFile.name.lastIndexOf('.'));
+									
+									var validFileType = ".jpg";
+									 if (validFileType.toLowerCase().indexOf(extension) < 0) {
+									    	$scope.invalidPicType = true;
+											
+											window.setTimeout(function()
+								    		{
+								    			$scope.$apply($scope.invalidPicType = false);
+								    		}, 5000);
+									    }
+									 else
+									    {
+									    	var reader = new FileReader();
+								  			reader.onload = function(event)
+											{
+								    			
+								    			$scope.$apply()
+								  			};
+								  			// when the file is read it triggers the onload event above.
+								  			reader.readAsDataURL(element.files[0]);
+								  			
+								  		
+											$scope.stateDisabled = true;
+									    	//
+											var file = $scope.currentFile;
+								  	        console.log('file is ' );
+								  	        console.dir(file);
+								  	        var uploadUrl = "http://localhost:9999/Talk/updateProfilePicture/";
+								  	      var res = $fileUpload.uploadFileToUrl(file, $scope.data.Username ,uploadUrl).then(
+								            		function(response)
+								            		{
+								            			$scope.response = response.status;
+								            			$scope.imagesrc = response.imagesrc;
+								            			
+								            			//console.log( $scope.response );
+								            			//console.log( $scope.imagesrc );
+								            			
+								            			if( $scope.response == "Uploaded" )
+										            			{
+										            				$scope.picUpdated = true;
+										            				
+										            				window.setTimeout(function()
+										        		    		{
+										        		    			$scope.$apply($scope.picUpdated = false);
+										        		    		}, 5000);
+										        		    		
+										            				$scope.currentImage = '${pageContext.request.contextPath}/' + $scope.imagesrc;
+										            				
+										            				$scope.defaultPic = ( $scope.currentImage == '/monkeybusiness/resources/images/profilepic_male.jpg' || $scope.currentImage == '/monkeybusiness/resources/images/profilepic_female.jpg' );
+										            			}
+								            			else
+								            			{
+															$scope.picUpdatedWithError = true;
+								            				
+								            				window.setTimeout(function()
+								        		    		{
+								        		    			$scope.$apply($scope.picUpdatedWithError = false);
+								        		    		}, 5000);
+								            				
+								            				//console.log($scope.currentImage);
+								            				
+								            				document.getElementById("profilepic").src = $scope.currentImage;
+								            			}
+								            			$scope.progressObj.SwitchFlag(false);
+									    				$scope.stateDisabled = false;
+									    				
+									    				
+								            		}, 
+								            		
+								            		 function(errResponse)
+										                {
+										                	console.error('Error while Updating User.');
+										                } 
+								  	    );
+								  	  
+									};
+								            		
+								            			
+									
+								}
+								
+								
+								
 
-						$scope.allusers = response;
-					}, function(errResponse) {
-						console.log('Error fetching Users');
-					});
-				}
-
-			} ]);
-
+							} ]);
 </script>
 
 
 <body ng-app="myApp" ng-controller="myCtrl">
-
-	<div class="container" style="margin-top: 10px; margin-bottom: 10px">
+<header style="padding-top: 10px; padding-bottom: 10px">
+	<div class="container"  >
 
 		<%@ include file="../templates/header.jsp"%>
 
 	</div>
+	</header>
+	
 	<hr />
+	
 
 
 	<div class="container">
@@ -188,6 +369,15 @@
 
 					<input type="submit" value="Upload It" />
 				</form> -->
+			
+			<div>
+			<button type="button" class="btn btn-link" ng-click="openFileChooser();">Change Picture</button>
+			
+			<input type="file" id="trigger" ng-show="false" onchange="angular.element(this).scope().setFile(this)" accept="image/*" file-model="myFile"/>
+								
+								
+			</div>	
+			
 
 
 			</div>
@@ -196,7 +386,7 @@
 				<div>
 					<span style="font-size: xx-large;"> {{userdetails.username}}</span>
 				</div>
-				
+
 				<div>
 					<i class="fa fa-envelope-o" aria-hidden="true"></i>&nbsp
 					{{userdetails.email}}
@@ -230,8 +420,9 @@
 
 		<button type="button" class="btn btn-default btn-sm"
 			data-toggle="modal" data-target="#myModal">Update Info</button>
+		<br /> 
 
-		<!-- Modal -->
+		<!-- Modal for update user details -->
 		<div class="modal fade" id="myModal" role="dialog">
 			<div class="modal-dialog modal-sm">
 				<div class="modal-content">
@@ -240,45 +431,53 @@
 						<h4 class="modal-title">Update Details</h4>
 					</div>
 					<div class="modal-body">
-						<form name="form" action="#" >
-						
-						
-							<div class="form-group" ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">
-          
-							<div class="input-group" style="margin-top: 20px">
-								<span class="input-group-addon"><i class="fa fa-user "
-									aria-hidden="true"></i></span> <input type="text" class="form-control" name="username" id="username"
-								ng-model="userdetails.username" 	 ng-value=userdetails.username required/>
-									 </div>
-									 <span ng-show="form.username.$dirty && form.username.$error.required" class="help-block">Username is required</span>
-      											
+						<form name="form" action="#">
+
+
+							<div class="form-group"
+								ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">
+
+								<div class="input-group" style="margin-top: 20px">
+									<span class="input-group-addon"><i class="fa fa-user "
+										aria-hidden="true"></i></span> <input type="text"
+										class="form-control" name="username" id="username"
+										ng-model="userdetails.username" ng-value=userdetails.username
+										required />
+								</div>
+								<span
+									ng-show="form.username.$dirty && form.username.$error.required"
+									class="help-block">Username is required</span>
 							</div>
+
 							<div class="input-group" style="margin-top: 20px">
 								<span class="input-group-addon"><i class="fa fa-phone "
 									aria-hidden="true"></i></span> <input type="tel" class="form-control"
-									ng-value=userdetails.phone ng-model="userdetails.phone"  />
+									ng-value=userdetails.phone ng-model="userdetails.phone" />
 							</div>
 							<div class="input-group" style="margin-top: 20px">
 								<span class="input-group-addon"><i
 									class="fa fa-map-marker fa-lg" aria-hidden="true"></i></span> <input
-									type="text" class="form-control" ng-value=userdetails.city ng-model="userdetails.city" />
+									type="text" class="form-control" ng-value=userdetails.city
+									ng-model="userdetails.city" />
 							</div>
 
 							<div class="input-group" style="margin-top: 20px">
 								<span class="input-group-addon"><i class="fa fa-calendar"
 									aria-hidden="true"></i></span> <input type="text" class="form-control"
-									ng-value=userdetails.dob ng-model="userdetails.dob"/>
+									ng-value=userdetails.dob ng-model="userdetails.dob" />
 							</div>
 
 							<div class="input-group" style="margin-top: 20px">
-								<input type="radio" name="gender" ng-model="userdetails.gender" value="Male" >
-								Male <input type="radio" ng-model="userdetails.gender" name="gender"  value="Female">
+								<input type="radio" name="gender" ng-model="userdetails.gender"
+									value="Male"> Male &nbsp <input type="radio"
+									ng-model="userdetails.gender" name="gender" value="Female">
 								Female<br>
 							</div>
 
-							<div class="modal-footer" style="margin-top: 20px">
-								<input type="submit" ng-click="updateUser()" value="Save" class="btn btn-primary"
-									data-dismiss="modal">
+
+							<div class="modal-footer" style="margin-top: 20px"	>
+								<input type="submit" ng-click="updateUser()" value="Save"
+									class="btn btn-primary" data-dismiss="modal" ng-disabled="form.username.$dirty && form.username.$error.required">
 							</div>
 
 						</form>
@@ -287,7 +486,95 @@
 			</div>
 		</div>
 		<span class="text-success">{{status.status}}</span>
-	
+		
+		<br/>
+		<button type="button" class="btn btn-default btn-sm"
+			data-toggle="modal" data-target="#myModal2">Change Password</button>
+
+
+		<!-- Modal for update password -->
+		<div class="modal fade" id="myModal2" role="dialog">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Update Details</h4>
+					</div>
+					<div class="modal-body">
+						<form name="form2" action="#">
+
+
+							<div class="form-group"
+								ng-class="{ 'has-error': form2.current_password.$dirty && form2.current_password.$error.required }">
+
+								<div class="input-group" style="margin-top: 20px">
+									<span class="input-group-addon"><i
+										class="fa fa-unlock-alt" aria-hidden="true"></i></span> <input
+										type="password" class="form-control"
+										name="current_password" id="current_password"
+										placeholder="Enter current password"
+										ng-model="userdetails.currentpassword" required />
+								</div>
+								<span
+									ng-show="form2.current_password.$dirty && form2.current_password.$error.required"
+									class="help-block">Current Password is required</span>
+							</div>
+
+							<div
+								ng-if="(userdetails.password != userdetails.currentpassword && form2.current_password.$dirty)">
+								<span class="text-danger">Password is Incorrect</span></div>
+
+
+							<div class="form-group"
+								ng-class="{ 'has-error': form2.new_password.$dirty && form2.new_password.$error.required }">
+
+								<div class="input-group" style="margin-top: 20px">
+									<span class="input-group-addon"><i class="fa fa-lock"
+										aria-hidden="true"></i></span> <input type="password"
+										class="form-control" name="new_password" id="new_password"
+										placeholder="Enter new password"
+										ng-model="userdetails.newpassword" required />
+								</div>
+								<span
+									ng-show="form2.new_password.$dirty && form2.new_password.$error.required"
+									class="help-block">New Password is required</span>
+							</div>
+							<div class="form-group"
+								ng-class="{ 'has-error': form2.cnfrm_new_password.$dirty && form2.cnfrm_new_password.$error.required }">
+
+								<div class="input-group" style="margin-top: 20px">
+									<span class="input-group-addon"><i class="fa fa-lock"
+										aria-hidden="true"></i></span> <input type="password"
+										class="form-control" name="cnfrm_new_password"
+										id="cnfrm_new_password" placeholder="Re-enter new password"
+										ng-model="userdetails.cnfrmnewpassword" required />
+								</div>
+								<span
+									ng-show="form2.cnfrm_new_password.$dirty && form2.cnfrm_new_password.$error.required"
+									class="help-block">New Password is required</span>
+							</div>
+
+
+							<div
+								ng-if="(userdetails.newpassword != userdetails.cnfrmnewpassword && form2.new_password.$dirty && form2.cnfrm_new_password.$dirty)">
+								<span class="text-danger">Password Not Match</span></div>
+
+
+							<div class="modal-footer" style="margin-top: 20px"
+								>
+								<input type="submit" ng-click="updatePassword()" value="Save"
+									class="btn btn-primary" data-dismiss="modal" ng-disabled="form2.current_password.$error.required || form2.new_password.$error.required || form2.cnfrm_new_password.$error.required || userdetails.password != userdetails.currentpassword || userdetails.newpassword != userdetails.cnfrmnewpassword">
+							</div>
+
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
 	</div>
 
 	<div class="container">
@@ -341,6 +628,6 @@
 		%>
 	</div>
 
-
+<%@ include file="../templates/footer.jsp"%>
 </body>
 </html>
