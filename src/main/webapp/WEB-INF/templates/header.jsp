@@ -24,7 +24,6 @@
 <c:if
 	test="${pageContext.request.requestURI eq '/Talk/WEB-INF/views/userprofile.jsp'}">
 
-<!--  --><h1><img alt="logo" src="resources/images/logomin.png" width="40" hight="40">Talk
-	<a href="logout" title="logout" class="pull-right"><i class="fa fa-power-off" aria-hidden="true"></i></a> </h1>
+<!--  -->
 
 </c:if>

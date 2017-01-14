@@ -20,6 +20,26 @@
 
 <script>
 	var myApp = angular.module("myApp", []);
+	
+	//default profile picture
+	myApp.directive('onErrorSrc', function() {
+		  return {
+			 
+		    link: function(scope, element, attrs) {
+		    	
+		      element.bind('error', function() {
+		   			       
+		        if (attrs.src != attrs.onErrorSrc) {
+		          attrs.$set('src', attrs.onErrorSrc);
+		          //disable the delete profile picture button when there is no image
+		          scope.picDeleted = true;   
+		    	  scope.$apply();
+		          
+		        }
+		      });
+		    }
+		  }
+		});
 
 	///////////////////////////////////////
 
@@ -249,30 +269,30 @@
 								$scope.picUpdated = false;
 								$scope.picUpdatedWithError = false;
 								$scope.invalidPicType = false;
-								$scope.picDeleted = false;
+								/* $scope.picDeleted = false;  */
 								
 								
-								// delete image
+								// delete profile image
 								
 								$scope.DeletePic = function()
 								{
 									
-									$scope.stateDisabled = true;
+									
 									
 									var resp = $UserService.deleteUserImage($scope.userdetails.email)
 						            .then(
 						            		function(response)
 						            		{
 						            			
-							    				$scope.stateDisabled = false;
-							    				
-							    				$scope.response = response.status;
+							    				$scope.status = response.status;
 							    			
-							    				
-							    				if( $scope.response == "Updated" )
+							    				if( $scope.status == "PICTURE DELETED" )
 						            			{
 						            				$scope.picDeleted = true;
 						            				$scope.userdetails.Image=null;
+						            				document.getElementById("profilepic").src = '';
+						            				document.getElementById("sm_profilepic").src = '';
+						            				
 						            			}
 						            			else
 						            			{
@@ -317,7 +337,8 @@
 													function(response) {
 														$scope.status = response.status;
 														$scope.imagesrc = response.imagesrc;
-
+														$scope.picDeleted = false;  
+			
 														//console.log( $scope.response );
 														//console.log( $scope.imagesrc );
 													
@@ -346,8 +367,11 @@
 	<header>
 	<div class="container">
 
-		<%@ include file="../templates/header.jsp"%>
-
+		<h1><img alt="logo" src="resources/images/logomin.png" width="40" hight="40">Talk
+		 <a href="logout" title="logout" class="pull-right"><i class="fa fa-power-off" aria-hidden="true"></i></a>&nbsp
+	<img ng-src="{{userdetails.Image}}"  class="img-circle pull-right" on-error-src='${pageContext.request.contextPath}/resources/images/user.jpg' width="30" height="30" id="sm_profilepic" />
+</h1>
+   		
 	</div>
 	</header>
 
@@ -359,18 +383,18 @@
 
 		<div class="col-md-6 col-md-offset-3">
 			<div class="col-md-6" >
-				<div ng-if="userdetails.gender == 'Male'">
+				 <div ng-if="userdetails.gender == 'Male'">
 
-					<img ng-src="{{userdetails.Image}}" width="150" height="150" class="img-circle"
+					<img ng-src="{{userdetails.Image}}" width="150" height="150"  id="profilepic"
 						onerror="this.src='${pageContext.request.contextPath}/resources/images/male_dummy.jpg'">
 				</div>
 				<div ng-if="userdetails.gender == 'Female'">
 					<img
-						ng-src="{{userdetails.Image}}" width="150" height="150" class="img-circle"
+						ng-src="{{userdetails.Image}}" width="150" height="150" id="profilepic"
 						onerror="this.src='${pageContext.request.contextPath}/resources/images/female_dummy.jpg'">
-				</div>
+				</div> 
 
-
+ 				
 
 
 				<div>
@@ -380,9 +404,12 @@
 					<input type="file" id="trigger" ng-show="false"
 						onchange="angular.element(this).scope().setFile(this)"
 						accept="image/*" file-model="myFile" />
+					
 						
-						<button ng-click="DeletePic();" class="btn btn-danger btn-sm" title="delete picture"><i class="fa fa-trash-o fa-1x" aria-hidden="true"></i></button>
+						<button ng-click="DeletePic();" class="btn btn-danger btn-sm" title="delete picture" ng-disabled="picDeleted"><i class="fa fa-trash-o fa-1x" aria-hidden="true"></i></button>
 
+
+					
 
 				</div>
 

@@ -230,12 +230,11 @@ public class RESTController {
 	        
 	        File directory = new File(path + "resources\\images\\" + p.getName()+".jpg" );
 			
-	        System.out.println(path + "resources\\images\\" + p.getName() + ".jpg" );
 	        directory.delete();
 			
 			JSONObject json = new JSONObject();
 	        	        
-	        json.put("status", "Picture Deleted");
+	        json.put("status", "PICTURE DELETED");
 	       	        
 	        System.out.println(json.toString());
 	        
