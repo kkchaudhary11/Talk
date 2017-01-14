@@ -20,43 +20,42 @@
 
 <script>
 	var myApp = angular.module("myApp", []);
-	
-	
-///////////////////////////////////////
-	myApp.service('fileUpload', ['$http', function ($http) {
-	    this.uploadFileToUrl = function(file, paramuser, uploadUrl){
-	        var fd = new FormData();
-	        fd.append('file', file);
-	        //fd.append('user','vasudev89');
-	        return $http.post(uploadUrl, fd, {
-	            transformRequest: angular.identity,
-	            headers: {'Content-Type': undefined , user: paramuser}
-	        })
-	        .then(
-                    function(response){
-                        return response.data;
-                    }, 
-                    function(errResponse){
-                        console.error('Error while updating User');
-                        return "error";
-                    }
-            );
-	    }
-	}]);
-	
-///////////////////////////////////////
+
+	///////////////////////////////////////
+
+	myApp.service('fileUpload', [ '$http', function($http) {
+		this.uploadFileToUrl = function(file, paramuser, uploadUrl) {
+			var fd = new FormData();
+			fd.append('file', file);
+			//fd.append('user','vasudev89');
+			return $http.post(uploadUrl, fd, {
+				transformRequest : angular.identity,
+				headers : {
+					'Content-Type' : undefined,
+					user : paramuser
+				}
+			}).then(function(response) {
+				return response.data;
+			}, function(errResponse) {
+				console.error('Error while updating User');
+				return "error";
+			});
+		}
+	} ]);
+
+	///////////////////////////////////////
 
 	myApp.factory("UserService", [
 			"$http",
 			"$q",
 			function($http, $q) {
-				var target_url = 'http://localhost:9999/Talk/';
+				var BASE_URL = 'http://localhost:9999/Talk/';
 
 				return {
 
 					userData : function() {
 
-						return $http.get(target_url + 'userdata').then(
+						return $http.get(BASE_URL + 'userdata').then(
 								function(response) {
 									return response.data;
 								}, function(errResponse) {
@@ -65,8 +64,8 @@
 					},
 
 					updateUser : function(item) {
-						return $http.post(target_url + 'updateuser', item)
-								.then(function(response) {
+						return $http.post(BASE_URL + 'updateuser', item).then(
+								function(response) {
 									return response.data;
 								}, function(errResponse) {
 									console.error('Error while sending data');
@@ -75,7 +74,17 @@
 					},
 
 					deleteUser : function(item) {
-						return $http.post(target_url + 'deleteuser', item)
+						return $http.post(BASE_URL + 'deleteuser', item).then(
+								function(response) {
+									return response.data;
+								}, function(errResponse) {
+									console.error('Error while sending data');
+									return $q.reject(errResponse);
+								});
+					},
+
+					updatePassword : function(item) {
+						return $http.post(BASE_URL + 'updatepassword', item)
 								.then(function(response) {
 									return response.data;
 								}, function(errResponse) {
@@ -84,18 +93,23 @@
 								});
 					},
 					
-					updatePassword : function(item) {
-						return $http.post(target_url + 'updatepassword', item)
-								.then(function(response) {
-									return response.data;
-								}, function(errResponse) {
-									console.error('Error while sending data');
-									return $q.reject(errResponse);
-								});
-					},
+					deleteUserImage: function(item){
+		                return $http.post(BASE_URL + 'deleteUserImage', item)
+		                        .then(
+		                                function(response){
+		                                    return response.data;
+		                                }, 
+		                                function(errResponse){
+		                                    console.error('Error while updating User');
+		                                    return $q.reject(errResponse);
+		                                }
+		                        );
+		        		
+					}
+					,
 
 					getAllUsers : function() {
-						return $http.get(target_url + 'allusers').then(
+						return $http.get(BASE_URL + 'allusers').then(
 								function(response) {
 									return response.data;
 								}, function(errResponse) {
@@ -111,19 +125,28 @@
 					[
 							"$scope",
 							"UserService",
-							function($scope, $UserService,$fileUpload) {
+							"fileUpload",
+							function($scope, $UserService, $fileUpload) {
 
+								//get user data when page loads
+								
 								$UserService
 										.userData()
 										.then(
 												function(response) {
 													//console.log(response);
 													$scope.userdetails = response;
+													//load profile picture when page loads after the userdetails get fatched
+													$scope.userdetails.Image = '${pageContext.request.contextPath}/resources/images/'
+															+ $scope.userdetails.email
+															+ '.jpg';
 												},
 												function(errResponse) {
 													console
 															.log('Error fetching User Details');
 												});
+
+								//update user data							
 
 								$scope.updateUser = function() {
 
@@ -144,11 +167,10 @@
 											.then(
 													function(response) {
 														try {
-															$scope.status = response;
+															$scope.status = response.status;
 														} catch (e) {
 															$scope.data = [];
 														}
-
 													},
 													function(errResponse) {
 														console
@@ -156,6 +178,8 @@
 													});
 								}
 
+								//delete user [ADMIN]
+								
 								$scope.deleteUser = function(userId) {
 									$UserService
 											.deleteUser(userId)
@@ -174,29 +198,34 @@
 													});
 								}
 
+								//update password
+								
 								$scope.updatePassword = function() {
-																			
-										console.log("in the update password update");
 
-										$UserService
-												.updatePassword( $scope.userdetails.newpassword)
-												.then(
-														function(response) {
-															try {
-																$scope.status = response;
-															} catch (e) {
-																$scope.data = [];
-															}
+									console
+											.log("in the update password update");
 
-														},
-														function(errResponse) {
-															console
-																	.error('Error while Sending Data.');
-														});
+									$UserService
+											.updatePassword(
+													$scope.userdetails.newpassword)
+											.then(
+													function(response) {
+														try {
+															$scope.status = response.status;
+														} catch (e) {
+															$scope.data = [];
+														}
 
+													},
+													function(errResponse) {
+														console
+																.error('Error while Sending Data.');
+													});
 
 								}
 
+								//list all users [ADMIN]
+								
 								$scope.getAllUsers = function() {
 									$UserService
 											.getAllUsers()
@@ -210,174 +239,153 @@
 																.log('Error fetching Users');
 													});
 								}
+
+								// open File Explorer for seleting file/image
 								
-								
-								$scope.openFileChooser = function()
-								{
+								$scope.openFileChooser = function() {
 									$('#trigger').trigger('click');
 								};
-								
+
 								$scope.picUpdated = false;
 								$scope.picUpdatedWithError = false;
 								$scope.invalidPicType = false;
-								
 								$scope.picDeleted = false;
 								
-								$scope.setFile = function(element){
+								
+								// delete image
+								
+								$scope.DeletePic = function()
+								{
 									
-									$scope.currentFile = element.files[0];
+									$scope.stateDisabled = true;
 									
-									var extension = $scope.currentFile.name.substring($scope.currentFile.name.lastIndexOf('.'));
-									
-									var validFileType = ".jpg";
-									 if (validFileType.toLowerCase().indexOf(extension) < 0) {
-									    	$scope.invalidPicType = true;
-											
-											window.setTimeout(function()
-								    		{
-								    			$scope.$apply($scope.invalidPicType = false);
-								    		}, 5000);
-									    }
-									 else
-									    {
-									    	var reader = new FileReader();
-								  			reader.onload = function(event)
-											{
-								    			
-								    			$scope.$apply()
-								  			};
-								  			// when the file is read it triggers the onload event above.
-								  			reader.readAsDataURL(element.files[0]);
-								  			
-								  		
-											$scope.stateDisabled = true;
-									    	//
-											var file = $scope.currentFile;
-								  	        console.log('file is ' );
-								  	        console.dir(file);
-								  	        var uploadUrl = "http://localhost:9999/Talk/updateProfilePicture/";
-								  	      var res = $fileUpload.uploadFileToUrl(file, $scope.data.Username ,uploadUrl).then(
-								            		function(response)
-								            		{
-								            			$scope.response = response.status;
-								            			$scope.imagesrc = response.imagesrc;
-								            			
-								            			//console.log( $scope.response );
-								            			//console.log( $scope.imagesrc );
-								            			
-								            			if( $scope.response == "Uploaded" )
-										            			{
-										            				$scope.picUpdated = true;
-										            				
-										            				window.setTimeout(function()
-										        		    		{
-										        		    			$scope.$apply($scope.picUpdated = false);
-										        		    		}, 5000);
-										        		    		
-										            				$scope.currentImage = '${pageContext.request.contextPath}/' + $scope.imagesrc;
-										            				
-										            				$scope.defaultPic = ( $scope.currentImage == '/monkeybusiness/resources/images/profilepic_male.jpg' || $scope.currentImage == '/monkeybusiness/resources/images/profilepic_female.jpg' );
-										            			}
-								            			else
-								            			{
-															$scope.picUpdatedWithError = true;
-								            				
-								            				window.setTimeout(function()
-								        		    		{
-								        		    			$scope.$apply($scope.picUpdatedWithError = false);
-								        		    		}, 5000);
-								            				
-								            				//console.log($scope.currentImage);
-								            				
-								            				document.getElementById("profilepic").src = $scope.currentImage;
-								            			}
-								            			$scope.progressObj.SwitchFlag(false);
-									    				$scope.stateDisabled = false;
-									    				
-									    				
-								            		}, 
-								            		
-								            		 function(errResponse)
-										                {
-										                	console.error('Error while Updating User.');
-										                } 
-								  	    );
-								  	  
-									};
-								            		
-								            			
-									
+									var resp = $UserService.deleteUserImage($scope.userdetails.email)
+						            .then(
+						            		function(response)
+						            		{
+						            			
+							    				$scope.stateDisabled = false;
+							    				
+							    				$scope.response = response.status;
+							    			
+							    				
+							    				if( $scope.response == "Updated" )
+						            			{
+						            				$scope.picDeleted = true;
+						            				$scope.userdetails.Image=null;
+						            			}
+						            			else
+						            			{
+													$scope.picUpdatedWithError = true;
+						            				}
+						            		}
+							            , 
+							                function(errResponse)
+							                {
+							                	console.error('Error while Updating User.');
+							                } 
+						        	);
 								}
 								
 								
 								
+								// Upload image 
+								
+								$scope.setFile = function(element) {
+
+									$scope.currentFile = element.files[0];
+
+									var reader = new FileReader();
+									reader.onload = function(event) {
+										$scope.userdetails.Image = event.target.result
+										$scope.$apply()
+									};
+									// when the file is read it triggers the onload event above.
+									reader.readAsDataURL($scope.currentFile);
+
+									
+									var file = $scope.currentFile;
+									console.log('file is :');
+									console.dir(file);
+									var uploadUrl =  "http://localhost:9999/Talk/updateProfilePicture/";
+									// calling uploadFileToUrl function of $fileUpload
+									var res = $fileUpload
+											.uploadFileToUrl(file,
+													$scope.userdetails.email,
+													uploadUrl)
+											.then(
+													function(response) {
+														$scope.status = response.status;
+														$scope.imagesrc = response.imagesrc;
+
+														//console.log( $scope.response );
+														//console.log( $scope.imagesrc );
+													
+
+															$scope.currentImage = '${pageContext.request.contextPath}/'
+																	+ $scope.imagesrc;
+
+												
+
+														$scope.stateDisabled = false;
+
+													},
+
+													function(errResponse) {
+														console
+																.error('Error while Updating User.');
+													});
+
+								};
 
 							} ]);
 </script>
 
 
 <body ng-app="myApp" ng-controller="myCtrl">
-<header style="padding-top: 10px; padding-bottom: 10px">
-	<div class="container"  >
+	<header>
+	<div class="container">
 
 		<%@ include file="../templates/header.jsp"%>
 
 	</div>
 	</header>
-	
+
 	<hr />
-	
+
 
 
 	<div class="container">
 
 		<div class="col-md-6 col-md-offset-3">
-			<div class="col-md-6">
+			<div class="col-md-6" >
 				<div ng-if="userdetails.gender == 'Male'">
-					<img
-						src="${pageContext.request.contextPath}/resources/images/{{}}.jpg"
-						width="150" height="150"
+
+					<img ng-src="{{userdetails.Image}}" width="150" height="150" class="img-circle"
 						onerror="this.src='${pageContext.request.contextPath}/resources/images/male_dummy.jpg'">
 				</div>
 				<div ng-if="userdetails.gender == 'Female'">
 					<img
-						src="${pageContext.request.contextPath}/resources/images/{{}}.jpg"
-						width="150" height="150"
+						ng-src="{{userdetails.Image}}" width="150" height="150" class="img-circle"
 						onerror="this.src='${pageContext.request.contextPath}/resources/images/female_dummy.jpg'">
 				</div>
 
 
-				<!-- <img src="" alt="Profile Image" width="150" height="150" ng-src="{{user.gender_image}}"/><br /> -->
-				<!-- <input id="upload" type="file"/>
-					<a href="" id="upload_link">Update Picture</a> -->
 
-				<!-- 	<script type="text/javascript">
-					$(function(){
-						$("#upload_link").on('click', function(e){
-						    e.preventDefault();
-						    $("#upload:hidden").trigger('click');
-						});
-						});
-					</script> -->
 
-				<!-- 	<form action="rest/file/upload" method="post"
-					enctype="multipart/form-data">
+				<div>
+					<button type="button" class="btn btn-link"
+						ng-click="openFileChooser();">Change Picture</button>
 
-					<p>
-						Select a file : <input type="file" name="file" size="45" />
-					</p>
+					<input type="file" id="trigger" ng-show="false"
+						onchange="angular.element(this).scope().setFile(this)"
+						accept="image/*" file-model="myFile" />
+						
+						<button ng-click="DeletePic();" class="btn btn-danger btn-sm" title="delete picture"><i class="fa fa-trash-o fa-1x" aria-hidden="true"></i></button>
 
-					<input type="submit" value="Upload It" />
-				</form> -->
-			
-			<div>
-			<button type="button" class="btn btn-link" ng-click="openFileChooser();">Change Picture</button>
-			
-			<input type="file" id="trigger" ng-show="false" onchange="angular.element(this).scope().setFile(this)" accept="image/*" file-model="myFile"/>
-								
-								
-			</div>	
-			
+
+				</div>
+
 
 
 			</div>
@@ -415,12 +423,18 @@
 					<i class="fa fa-mars" aria-hidden="true"></i> &nbsp
 					{{userdetails.gender}}
 				</div>
+				
+				<div ng-show="status">
+				<p class="alert alert-info"><b>Success!</b>&nbsp{{status}}<br /></p>
+				</div>
 			</div>
 		</div>
 
 		<button type="button" class="btn btn-default btn-sm"
 			data-toggle="modal" data-target="#myModal">Update Info</button>
-		<br /> 
+		<br />
+		
+		
 
 		<!-- Modal for update user details -->
 		<div class="modal fade" id="myModal" role="dialog">
@@ -475,9 +489,10 @@
 							</div>
 
 
-							<div class="modal-footer" style="margin-top: 20px"	>
+							<div class="modal-footer" style="margin-top: 20px">
 								<input type="submit" ng-click="updateUser()" value="Save"
-									class="btn btn-primary" data-dismiss="modal" ng-disabled="form.username.$dirty && form.username.$error.required">
+									class="btn btn-primary" data-dismiss="modal"
+									ng-disabled="form.username.$dirty && form.username.$error.required">
 							</div>
 
 						</form>
@@ -485,9 +500,7 @@
 				</div>
 			</div>
 		</div>
-		<span class="text-success">{{status.status}}</span>
 		
-		<br/>
 		<button type="button" class="btn btn-default btn-sm"
 			data-toggle="modal" data-target="#myModal2">Change Password</button>
 
@@ -510,9 +523,8 @@
 								<div class="input-group" style="margin-top: 20px">
 									<span class="input-group-addon"><i
 										class="fa fa-unlock-alt" aria-hidden="true"></i></span> <input
-										type="password" class="form-control"
-										name="current_password" id="current_password"
-										placeholder="Enter current password"
+										type="password" class="form-control" name="current_password"
+										id="current_password" placeholder="Enter current password"
 										ng-model="userdetails.currentpassword" required />
 								</div>
 								<span
@@ -522,7 +534,8 @@
 
 							<div
 								ng-if="(userdetails.password != userdetails.currentpassword && form2.current_password.$dirty)">
-								<span class="text-danger">Password is Incorrect</span></div>
+								<span class="text-danger">Password is Incorrect</span>
+							</div>
 
 
 							<div class="form-group"
@@ -557,13 +570,14 @@
 
 							<div
 								ng-if="(userdetails.newpassword != userdetails.cnfrmnewpassword && form2.new_password.$dirty && form2.cnfrm_new_password.$dirty)">
-								<span class="text-danger">Password Not Match</span></div>
+								<span class="text-danger">Password Not Match</span>
+							</div>
 
 
-							<div class="modal-footer" style="margin-top: 20px"
-								>
+							<div class="modal-footer" style="margin-top: 20px">
 								<input type="submit" ng-click="updatePassword()" value="Save"
-									class="btn btn-primary" data-dismiss="modal" ng-disabled="form2.current_password.$error.required || form2.new_password.$error.required || form2.cnfrm_new_password.$error.required || userdetails.password != userdetails.currentpassword || userdetails.newpassword != userdetails.cnfrmnewpassword">
+									class="btn btn-primary" data-dismiss="modal"
+									ng-disabled="form2.current_password.$error.required || form2.new_password.$error.required || form2.cnfrm_new_password.$error.required || userdetails.password != userdetails.currentpassword || userdetails.newpassword != userdetails.cnfrmnewpassword">
 							</div>
 
 
@@ -628,6 +642,6 @@
 		%>
 	</div>
 
-<%@ include file="../templates/footer.jsp"%>
+	<%@ include file="../templates/footer.jsp"%>
 </body>
 </html>

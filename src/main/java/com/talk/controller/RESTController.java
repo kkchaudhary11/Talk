@@ -33,10 +33,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.google.gson.Gson;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 import com.talk.dao.UserDAO;
@@ -118,7 +116,7 @@ public class RESTController {
 		
 		JSONObject json = new JSONObject();
         
-        json.put("status", "UPDATED");
+        json.put("status", "DETAILS UPDATED");
         System.out.println(json.toString());
         
         return new ResponseEntity<String>(json.toString(), HttpStatus.CREATED);
@@ -155,11 +153,7 @@ public class RESTController {
 		System.out.println( request.getFile("file").getContentType() );
 		System.out.println( request.getFile("file").getOriginalFilename() );
 		
-		String hashname[] = request.getFile("file").getOriginalFilename().split(",");
-		
 		JSONObject json = new JSONObject();
-		
-		json.put("status", "Failed");
 		
 		BufferedOutputStream stream = null;
 		
@@ -185,14 +179,16 @@ public class RESTController {
 	            
 	            if (!directory.exists()) directory.mkdirs();
 	           
-	            if( hashname.length > 0 )
-	            {
-	            	file = new File(directory.getAbsolutePath() + System.getProperty("file.separator") + HashManager.generateHashCode( request.getHeader("user") + hashname[0] ) + ".jpg");
+	            
+	            	file = new File(directory.getAbsolutePath() + System.getProperty("file.separator") + request.getHeader("user") + ".jpg");
 		            
 		            System.out.println(file.getAbsolutePath());
 		            
 		            stream = new BufferedOutputStream(new FileOutputStream(file));
 		            stream.write(bytes);
+		            
+		            json.put("status", "IMAGE UPLOADED");
+		            
 		            stream.close();
 		            
 		          /*  Profile p = ps.getProfile(request.getHeader("user"));
@@ -206,8 +202,7 @@ public class RESTController {
 		            	json.put("status", "Uploaded");
 		            	json.put("imagesrc", "resources/images/" + HashManager.generateHashCode( request.getHeader("user") + hashname[0] ) + ".jpg" );
 		            }*/
-	            }
-
+	            
 	        }
 	    }
 	    catch (Exception e)
@@ -219,6 +214,33 @@ public class RESTController {
         
         return new ResponseEntity<String>(json.toString(), HttpStatus.CREATED);
     }
+	
+	
+	 @RequestMapping(value = "/deleteUserImage", method = RequestMethod.POST)
+	    public ResponseEntity<String> deleteUserImage(HttpServletResponse response,@RequestBody String user, UriComponentsBuilder ucBuilder, Principal p) {
+	        
+			System.out.println(user);
+			
+			
+			String path = context.getRealPath("/");
+	        
+	        System.out.println(path);
+	        
+	        
+	        
+	        File directory = new File(path + "resources\\images\\" + p.getName()+".jpg" );
+			
+	        System.out.println(path + "resources\\images\\" + p.getName() + ".jpg" );
+	        directory.delete();
+			
+			JSONObject json = new JSONObject();
+	        	        
+	        json.put("status", "Picture Deleted");
+	       	        
+	        System.out.println(json.toString());
+	        
+	        return new ResponseEntity<String>(json.toString(), HttpStatus.CREATED);
+	    }
 	
 	
 	
