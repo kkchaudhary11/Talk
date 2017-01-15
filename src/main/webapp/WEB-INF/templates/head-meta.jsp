@@ -3,7 +3,7 @@
 <%@ page isELIgnored="false"%>
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Walk & Talk</title>
+<title>Talk</title>
 
 <link rel="shortcut icon" href="resources/images/logomin.png" />
 

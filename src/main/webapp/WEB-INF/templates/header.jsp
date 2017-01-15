@@ -15,7 +15,7 @@
 	test="${pageContext.request.requestURI eq '/Talk/WEB-INF/views/aboutus.jsp'}">
 
 	<h1>
-		About Us <a href="index" title="Home" style="float: right"><i
+		About Us <a href="index" title="Home" class="pull-right"><i
 			class="fa fa-home" aria-hidden="true"></i></a>
 	</h1>
 
@@ -24,7 +24,6 @@
 <c:if
 	test="${pageContext.request.requestURI eq '/Talk/WEB-INF/views/userprofile.jsp'}">
 
-<img alt="logo" src="resources/images/logo.png" width="80" hight="50">
-	<a href="logout" title="logout" class="pull-right"><i class="fa fa-power-off fa-2x" aria-hidden="true"></i></a>
+<!--  -->
 
 </c:if>
