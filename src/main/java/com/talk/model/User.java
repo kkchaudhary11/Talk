@@ -31,7 +31,7 @@ public class User {
 	private String dob;
 	private String gender;
 	private boolean enabled=true;
-	private String role="USER";
+	private String role="ROLE_USER";
 	
 	//getters and setters
 	

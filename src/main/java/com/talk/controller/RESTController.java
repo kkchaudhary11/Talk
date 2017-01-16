@@ -82,7 +82,7 @@ public class RESTController {
 		
 	}
 	
-	@GetMapping("/allusers")
+	@GetMapping("admin/allusers")
 		public ResponseEntity<List<User>> allUsers(){
 		
 		List<User> list = userdao.listUser();
@@ -279,11 +279,11 @@ public class RESTController {
 	        return new ResponseEntity<String>(json.toString(), HttpStatus.CREATED);
 			}
 	 
-	 @PreAuthorize("hasRole('ADMIN')")
-	 @GetMapping("/allblogs")
+
+	 @GetMapping("admin/allblogs")
 		public ResponseEntity<List<Blog>> allBlogs(){
 		
-		List<Blog> list = blogdao.listBlogs();
+		List<Blog> list = blogdao.listAllBlogs();
 		
 		return new ResponseEntity<List<Blog>>(list, HttpStatus.OK);
 		
@@ -316,11 +316,11 @@ public class RESTController {
 			}
 	 
 		@GetMapping("/blogs")
-		public ResponseEntity<List<User>> blogs(){
+		public ResponseEntity<List<Blog>> blogs(){
 		
-		List<User> list = userdao.listUser();
+		List<Blog> list = blogdao.listBlogs();
 		
-		return new ResponseEntity<List<User>>(list, HttpStatus.OK);
+		return new ResponseEntity<List<Blog>>(list, HttpStatus.OK);
 		
 			}
 

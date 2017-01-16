@@ -131,7 +131,7 @@
 					,
 
 					getAllUsers : function() {
-						return $http.get(BASE_URL + 'allusers').then(
+						return $http.get(BASE_URL + 'admin/allusers').then(
 								function(response) {
 									return response.data;
 								}, function(errResponse) {
@@ -150,7 +150,7 @@
 					},
 					
 					getAllBlogs : function() {
-						return $http.get(BASE_URL + 'allblogs').then(
+						return $http.get(BASE_URL + 'admin/allblogs').then(
 								function(response) {
 									return response.data;
 								}, function(errResponse) {
@@ -168,6 +168,17 @@
 									return $q.reject(errResponse);
 								});
 					}
+					,
+					
+					getBlogs : function() {
+						return $http.get(BASE_URL + 'blogs').then(
+								function(response) {
+									return response.data;
+								}, function(errResponse) {
+									return $q.reject(errResponse);
+								});
+					}
+					
 					
 				};
 			} ]);
@@ -440,7 +451,7 @@
 													});
 								}
 								
-//list all blogs [ADMIN]
+								//list all blogs [ADMIN]
 								
 								$scope.publishBlog = function(blogId) {
 										console.log(blogId);
@@ -458,6 +469,22 @@
 												});
 								}
 								
+								//list blogs
+								
+								$scope.getBlogs = function() {
+									$UserService
+											.getBlogs()
+											.then(
+													function(response) {
+
+														$scope.blogs = response;
+													},
+													function(errResponse) {
+														console
+																.log('Error fetching Users');
+													});
+								}
+								
 								
 
 							} ]);
@@ -468,9 +495,9 @@
 	<header>
 	<div class="container">
 
-		<h1><img alt="logo" src="resources/images/logomin.png" width="40" hight="40">Talk
+		<h1><img alt="logo" src="resources/images/logomin.png" width="50" height="50">Talk
 		 <a href="logout" title="logout" class="pull-right"><i class="fa fa-power-off" aria-hidden="true"></i></a>&nbsp
-	<img ng-src="{{userdetails.Image}}"  class="img-circle pull-right" on-error-src='${pageContext.request.contextPath}/resources/images/user.jpg' width="30" height="30" id="sm_profilepic" />
+	<img ng-src="{{userdetails.Image}}"  class="img-circle pull-right" width="40" height="40" on-error-src='${pageContext.request.contextPath}/resources/images/user.jpg' width="30" height="30" id="sm_profilepic" />
 </h1>
    		
 	</div>
@@ -721,7 +748,8 @@
 
 	<div class="container">
 
-		<security:authorize access="hasRole('ADMIN')">
+		<security:authorize access="hasRole('ROLE_ADMIN')">
+
 
 		<div>
 
@@ -809,6 +837,40 @@
 		
 		<button type="button" class="btn btn-primary btn-sm"
 			data-toggle="modal" data-target="#myBlog">Create Blog</button>
+			
+			<button ng-click="getBlogs()" class="btn btn-primary"> Blogs</button>
+			
+			<div>
+			<table class="table" ng-show="blogs">
+			<caption><h3>BLOGS</h3></caption>
+				<thead>
+
+					<tr>
+						<th>User Name</th>
+						<th>User email</th>
+						<th>Blog Title</th>
+						<th>Blog Description</th>
+						<th>Blog Date</th>
+					
+						<th></th>
+						
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="blog in blogs">
+					<td>{{blog.userId.username}}</td>
+					<td>{{blog.userId.email}}</td>
+						<td>{{blog.title}}</td>
+						<td>{{blog.description}}</td>
+						<td>{{blog.blogdate}}</td>
+						
+					</tr>
+
+				</tbody>
+			</table>
+			
+			</div>
+		
 		
 		
 		<!-- Modal for update password -->
