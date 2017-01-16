@@ -20,7 +20,6 @@
 		<!-- Restrict URLs based on role -->
 		<security:intercept-url pattern="/**"
 			access="permitAll or hasRole('USER') or hasRole('ADMIN')" />
-
 		<!-- Override default login and logout pages -->
 		<security:form-login login-page="/index"
 			username-parameter="username" password-parameter="password"
@@ -29,12 +28,13 @@
 			logout-success-url="/loginpage?logout" /> -->
 			
 		
-
 		<security:csrf disabled="true" />
 	</security:http>
 
 	<security:authentication-manager>
+	
 		<security:authentication-provider>
+		
 			<!--  <security:password-encoder hash="bcrypt" /> -->
 			<security:jdbc-user-service
 				data-source-ref="dataSource"

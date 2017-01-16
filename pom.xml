@@ -60,8 +60,15 @@
   <groupId>${spring.groupId}</groupId>
   <artifactId>${spring.artId}-webmvc</artifactId>
   <version>${spring.version}</version>
+  
    
   </dependency>
+  
+  <dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-aop</artifactId>
+    <version>${spring.version}</version>
+</dependency>
   
  
  
@@ -114,6 +121,8 @@
 			<artifactId>spring-security-config</artifactId>
 			<version>4.0.0.RELEASE</version>
 		</dependency>
+		
+		
 		
 		 <dependency>
 			<groupId>javax.validation</groupId>
