@@ -9,7 +9,10 @@
 <body>
 
 	<div class="container">
-		<%@ include file="../templates/header.jsp"%>
+		<h1>
+		About Us <a href="index" title="Home" class="pull-right"><i
+			class="fa fa-home" aria-hidden="true"></i></a>
+		</h1>
 	</div>
 	
 	<div class="container">

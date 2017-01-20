@@ -2,46 +2,37 @@
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="security"
-  uri="http://www.springframework.org/security/tags" %>
+	uri="http://www.springframework.org/security/tags"%>
 <!DOCTYPE html">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ include file="../templates/head-meta.jsp"%>
 
-<style type="text/css">
-#upload_link {
-	text-decoration: none;
-}
-
-#upload {
-	display: none
-}
-</style>
 </head>
 
 <script>
 	var myApp = angular.module("myApp", []);
-	
+
 	//default profile picture
 	myApp.directive('onErrorSrc', function() {
-		  return {
-			 
-		    link: function(scope, element, attrs) {
-		    	
-		      element.bind('error', function() {
-		   			       
-		        if (attrs.src != attrs.onErrorSrc) {
-		          attrs.$set('src', attrs.onErrorSrc);
-		          //disable the delete profile picture button when there is no image
-		          scope.picDeleted = true;   
-		    	  scope.$apply();
-		          
-		        }
-		      });
-		    }
-		  }
-		});
+		return {
+
+			link : function(scope, element, attrs) {
+
+				element.bind('error', function() {
+
+					if (attrs.src != attrs.onErrorSrc) {
+						attrs.$set('src', attrs.onErrorSrc);
+						//disable the delete profile picture button when there is no image
+						scope.picDeleted = true;
+						scope.$apply();
+
+					}
+				});
+			}
+		}
+	});
 
 	///////////////////////////////////////
 
@@ -114,21 +105,17 @@
 									return $q.reject(errResponse);
 								});
 					},
-					
-					deleteUserImage: function(item){
-		                return $http.post(BASE_URL + 'deleteUserImage', item)
-		                        .then(
-		                                function(response){
-		                                    return response.data;
-		                                }, 
-		                                function(errResponse){
-		                                    console.error('Error while updating User');
-		                                    return $q.reject(errResponse);
-		                                }
-		                        );
-		        		
-					}
-					,
+
+					deleteUserImage : function(item) {
+						return $http.post(BASE_URL + 'deleteUserImage', item)
+								.then(function(response) {
+									return response.data;
+								}, function(errResponse) {
+									console.error('Error while updating User');
+									return $q.reject(errResponse);
+								});
+
+					},
 
 					getAllUsers : function() {
 						return $http.get(BASE_URL + 'admin/allusers').then(
@@ -138,8 +125,8 @@
 									return $q.reject(errResponse);
 								});
 					},
-					
-					postBlog : function(item) {
+
+				/* 	postBlog : function(item) {
 						return $http.post(BASE_URL + 'postblog', item).then(
 								function(response) {
 									return response.data;
@@ -177,9 +164,8 @@
 								}, function(errResponse) {
 									return $q.reject(errResponse);
 								});
-					}
-					
-					
+					} */
+
 				};
 			} ]);
 
@@ -193,7 +179,7 @@
 							function($scope, $UserService, $fileUpload) {
 
 								//get user data when page loads
-								
+
 								$UserService
 										.userData()
 										.then(
@@ -243,7 +229,7 @@
 								}
 
 								//delete user [ADMIN]
-								
+
 								$scope.deleteUser = function(userId) {
 									$UserService
 											.deleteUser(userId)
@@ -263,7 +249,7 @@
 								}
 
 								//update password
-								
+
 								$scope.updatePassword = function() {
 
 									console
@@ -289,7 +275,7 @@
 								}
 
 								//list all users [ADMIN]
-								
+
 								$scope.getAllUsers = function() {
 									$UserService
 											.getAllUsers()
@@ -305,7 +291,7 @@
 								}
 
 								// open File Explorer for seleting file/image
-								
+
 								$scope.openFileChooser = function() {
 									$('#trigger').trigger('click');
 								};
@@ -314,47 +300,38 @@
 								$scope.picUpdatedWithError = false;
 								$scope.invalidPicType = false;
 								/* $scope.picDeleted = false;  */
-								
-								
+
 								// delete profile image
-								
-								$scope.DeletePic = function()
-								{
-									
-									
-									
-									var resp = $UserService.deleteUserImage($scope.userdetails.email)
-						            .then(
-						            		function(response)
-						            		{
-						            			
-							    				$scope.status = response.status;
-							    			
-							    				if( $scope.status == "PICTURE DELETED" )
-						            			{
-						            				$scope.picDeleted = true;
-						            				$scope.userdetails.Image=null;
-						            				document.getElementById("profilepic").src = '';
-						            				document.getElementById("sm_profilepic").src = '';
-						            				
-						            			}
-						            			else
-						            			{
-													$scope.picUpdatedWithError = true;
-						            				}
-						            		}
-							            , 
-							                function(errResponse)
-							                {
-							                	console.error('Error while Updating User.');
-							                } 
-						        	);
+								$scope.DeletePic = function() {
+
+									var resp = $UserService
+											.deleteUserImage(
+													$scope.userdetails.email)
+											.then(
+													function(response) {
+
+														$scope.status = response.status;
+
+														if ($scope.status == "PICTURE DELETED") {
+															$scope.picDeleted = true;
+															$scope.userdetails.Image = null;
+															document
+																	.getElementById("profilepic").src = '';
+															document
+																	.getElementById("sm_profilepic").src = '';
+
+														} else {
+															$scope.picUpdatedWithError = true;
+														}
+													},
+													function(errResponse) {
+														console
+																.error('Error while Updating User.');
+													});
 								}
-								
-								
-								
+
 								// Upload image 
-								
+
 								$scope.setFile = function(element) {
 
 									$scope.currentFile = element.files[0];
@@ -367,11 +344,10 @@
 									// when the file is read it triggers the onload event above.
 									reader.readAsDataURL($scope.currentFile);
 
-									
 									var file = $scope.currentFile;
 									console.log('file is :');
 									console.dir(file);
-									var uploadUrl =  "http://localhost:9999/Talk/updateProfilePicture/";
+									var uploadUrl = "http://localhost:9999/Talk/updateProfilePicture/";
 									// calling uploadFileToUrl function of $fileUpload
 									var res = $fileUpload
 											.uploadFileToUrl(file,
@@ -381,16 +357,13 @@
 													function(response) {
 														$scope.status = response.status;
 														$scope.imagesrc = response.imagesrc;
-														$scope.picDeleted = false;  
-			
+														$scope.picDeleted = false;
+
 														//console.log( $scope.response );
 														//console.log( $scope.imagesrc );
-													
 
-															$scope.currentImage = '${pageContext.request.contextPath}/'
-																	+ $scope.imagesrc;
-
-												
+														$scope.currentImage = '${pageContext.request.contextPath}/'
+																+ $scope.imagesrc;
 
 														$scope.stateDisabled = false;
 
@@ -402,127 +375,116 @@
 													});
 
 								};
-								
-								// post the blog
-								
-								$scope.postBlog = function() {
 
-									console
-											.log("in the post blog");
-									$scope.UserBlog = {
-											Username : $scope.userdetails.username,
-											BlogTitle : $scope.user.blogTitle,
-											BlogDesc : $scope.user.blogDesc,
-											
-										};
+								/* 		// post the blog
+										
+										$scope.postBlog = function() {
 
-									$UserService
-											.postBlog(
-													$scope.UserBlog)
-											.then(
-													function(response) {
-														try {
+											console
+													.log("in the post blog");
+											$scope.UserBlog = {
+													Username : $scope.userdetails.username,
+													BlogTitle : $scope.user.blogTitle,
+													BlogDesc : $scope.user.blogDesc,
+													
+												};
+
+											$UserService
+													.postBlog(
+															$scope.UserBlog)
+													.then(
+															function(response) {
+																try {
+																	$scope.status = response.status;
+																} catch (e) {
+																	$scope.data = [];
+																}
+
+															},
+															function(errResponse) {
+																console
+																		.error('Error while Sending Data.');
+															});
+
+										}
+										
+										//list all blogs [ADMIN]
+										
+										$scope.getAllBlogs = function() {
+											$UserService
+													.getAllBlogs()
+													.then(
+															function(response) {
+
+																$scope.allblogs = response;
+															},
+															function(errResponse) {
+																console
+																		.log('Error fetching Users');
+															});
+										}
+										
+										//list all blogs [ADMIN]
+										
+										$scope.publishBlog = function(blogId) {
+												console.log(blogId);
+										
+												$UserService
+												.publishBlog(blogId)
+												.then(
+														function(response) {
+
 															$scope.status = response.status;
-														} catch (e) {
-															$scope.data = [];
-														}
+														},
+														function(errResponse) {
+															console
+																	.log('Error fetching Users');
+														});
+										}
+										
+										//list blogs
+										
+										$scope.getBlogs = function() {
+											$UserService
+													.getBlogs()
+													.then(
+															function(response) {
 
-													},
-													function(errResponse) {
-														console
-																.error('Error while Sending Data.');
-													});
-
-								}
-								
-								//list all blogs [ADMIN]
-								
-								$scope.getAllBlogs = function() {
-									$UserService
-											.getAllBlogs()
-											.then(
-													function(response) {
-
-														$scope.allblogs = response;
-													},
-													function(errResponse) {
-														console
-																.log('Error fetching Users');
-													});
-								}
-								
-								//list all blogs [ADMIN]
-								
-								$scope.publishBlog = function(blogId) {
-										console.log(blogId);
-								
-										$UserService
-										.publishBlog(blogId)
-										.then(
-												function(response) {
-
-													$scope.status = response.status;
-												},
-												function(errResponse) {
-													console
-															.log('Error fetching Users');
-												});
-								}
-								
-								//list blogs
-								
-								$scope.getBlogs = function() {
-									$UserService
-											.getBlogs()
-											.then(
-													function(response) {
-
-														$scope.blogs = response;
-													},
-													function(errResponse) {
-														console
-																.log('Error fetching Users');
-													});
-								}
-								
-								
+																$scope.blogs = response;
+															},
+															function(errResponse) {
+																console
+																		.log('Error fetching Users');
+															});
+										}
+								 */
 
 							} ]);
 </script>
 
 
 <body ng-app="myApp" ng-controller="myCtrl">
-	<header>
-	<div class="container">
-
-		<h1><img alt="logo" src="resources/images/logomin.png" width="50" height="50">Talk
-		 <a href="logout" title="logout" class="pull-right"><i class="fa fa-power-off" aria-hidden="true"></i></a>&nbsp
-	<img ng-src="{{userdetails.Image}}"  class="img-circle pull-right" width="40" height="40" on-error-src='${pageContext.request.contextPath}/resources/images/user.jpg' width="30" height="30" id="sm_profilepic" />
-</h1>
-   		
-	</div>
-	</header>
-
-	<hr />
 
 
+	<%@ include file="../templates/header.jsp"%>
 
 	<div class="container">
 
-		<div class="col-md-6 col-md-offset-3">
-			<div class="col-md-6" >
-				 <div ng-if="userdetails.gender == 'Male'">
+		<div class="col-md-6 col-md-offset-3 ">
+			<div class="col-md-6 text-center">
+				<div ng-if="userdetails.gender == 'Male'">
 
-					<img ng-src="{{userdetails.Image}}" width="150" height="150"  id="profilepic"
+					<img ng-src="{{userdetails.Image}}" width="150" height="150"
+						id="profilepic"
 						onerror="this.src='${pageContext.request.contextPath}/resources/images/male_dummy.jpg'">
 				</div>
 				<div ng-if="userdetails.gender == 'Female'">
-					<img
-						ng-src="{{userdetails.Image}}" width="150" height="150" id="profilepic"
+					<img ng-src="{{userdetails.Image}}" width="150" height="150"
+						id="profilepic"
 						onerror="this.src='${pageContext.request.contextPath}/resources/images/female_dummy.jpg'">
-				</div> 
+				</div>
 
- 				
+
 
 
 				<div>
@@ -532,12 +494,15 @@
 					<input type="file" id="trigger" ng-show="false"
 						onchange="angular.element(this).scope().setFile(this)"
 						accept="image/*" file-model="myFile" />
-					
-						
-						<button ng-click="DeletePic();" class="btn btn-danger btn-sm" title="delete picture" ng-disabled="picDeleted"><i class="fa fa-trash-o fa-1x" aria-hidden="true"></i></button>
 
 
-					
+					<button ng-click="DeletePic();" class="btn btn-danger btn-sm"
+						title="delete picture" ng-disabled="picDeleted">
+						<i class="fa fa-trash-o fa-1x" aria-hidden="true"></i>
+					</button>
+
+
+
 
 				</div>
 
@@ -545,120 +510,63 @@
 
 			</div>
 
-			<div class="col-md-6">
-				<div>
-					<span style="font-size: xx-large;"> {{userdetails.username}}</span>
-				</div>
-
-				<div>
-					<i class="fa fa-envelope-o" aria-hidden="true"></i>&nbsp
-					{{userdetails.email}}
-				</div>
-				<div>
-					<i class="fa fa-phone" aria-hidden="true"></i> &nbsp
-					{{userdetails.phone}}
-				</div>
-
-				<div>
-					<i class="fa fa-map-marker" aria-hidden="true"></i>&nbsp&nbsp
-					{{userdetails.city}}
-				</div>
-
-				<div>
-					<i class="fa fa-birthday-cake" aria-hidden="true"></i>&nbsp
-					{{userdetails.dob}}
-				</div>
-
-				<div ng-if="userdetails.gender == 'Male'">
-					<i class="fa fa-mars" aria-hidden="true"></i> &nbsp
-					{{userdetails.gender}}
-				</div>
-
-				<div ng-if="userdetails.gender == 'Female'">
-					<i class="fa fa-mars" aria-hidden="true"></i> &nbsp
-					{{userdetails.gender}}
-				</div>
-				
-				<div ng-show="status">
-				<p class="alert alert-info"><b>Success!</b>&nbsp{{status}}<br /></p>
-				</div>
-			</div>
-		</div>
-
-		<button type="button" class="btn btn-default btn-sm"
-			data-toggle="modal" data-target="#myModal">Update Info</button>
-		<br />
-		
-		
-
-		<!-- Modal for update user details -->
-		<div class="modal fade" id="myModal" role="dialog">
-			<div class="modal-dialog modal-sm">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4 class="modal-title">Update Details</h4>
-					</div>
-					<div class="modal-body">
-						<form name="form" action="#">
+			<div class="col-md-6 text-center">
 
 
-							<div class="form-group"
-								ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">
+				<div style="display: inline-block;">
 
-								<div class="input-group" style="margin-top: 20px">
-									<span class="input-group-addon"><i class="fa fa-user "
-										aria-hidden="true"></i></span> <input type="text"
-										class="form-control" name="username" id="username"
-										ng-model="userdetails.username" ng-value=userdetails.username
-										required />
-								</div>
-								<span
-									ng-show="form.username.$dirty && form.username.$error.required"
-									class="help-block">Username is required</span>
-							</div>
+					<div style="text-align: left">
+						<div>
+							<span style="font-size: xx-large;">
+								{{userdetails.username}}</span>
+						</div>
 
-							<div class="input-group" style="margin-top: 20px">
-								<span class="input-group-addon"><i class="fa fa-phone "
-									aria-hidden="true"></i></span> <input type="tel" class="form-control"
-									ng-value=userdetails.phone ng-model="userdetails.phone" />
-							</div>
-							<div class="input-group" style="margin-top: 20px">
-								<span class="input-group-addon"><i
-									class="fa fa-map-marker fa-lg" aria-hidden="true"></i></span> <input
-									type="text" class="form-control" ng-value=userdetails.city
-									ng-model="userdetails.city" />
-							</div>
+						<div>
+							<i class="fa fa-envelope-o" aria-hidden="true"></i>&nbsp
+							{{userdetails.email}}
+						</div>
+						<div>
+							<i class="fa fa-phone" aria-hidden="true"></i> &nbsp
+							{{userdetails.phone}}
+						</div>
 
-							<div class="input-group" style="margin-top: 20px">
-								<span class="input-group-addon"><i class="fa fa-calendar"
-									aria-hidden="true"></i></span> <input type="text" class="form-control"
-									ng-value=userdetails.dob ng-model="userdetails.dob" />
-							</div>
+						<div>
+							<i class="fa fa-map-marker" aria-hidden="true"></i>&nbsp&nbsp
+							{{userdetails.city}}
+						</div>
 
-							<div class="input-group" style="margin-top: 20px">
-								<input type="radio" name="gender" ng-model="userdetails.gender"
-									value="Male"> Male &nbsp <input type="radio"
-									ng-model="userdetails.gender" name="gender" value="Female">
-								Female<br>
-							</div>
+						<div>
+							<i class="fa fa-birthday-cake" aria-hidden="true"></i>&nbsp
+							{{userdetails.dob}}
+						</div>
 
+						<div ng-if="userdetails.gender == 'Male'">
+							<i class="fa fa-mars" aria-hidden="true"></i> &nbsp
+							{{userdetails.gender}}
+						</div>
 
-							<div class="modal-footer" style="margin-top: 20px">
-								<input type="submit" ng-click="updateUser()" value="Save"
-									class="btn btn-primary" data-dismiss="modal"
-									ng-disabled="form.username.$dirty && form.username.$error.required">
-							</div>
+						<div ng-if="userdetails.gender == 'Female'">
+							<i class="fa fa-mars" aria-hidden="true"></i> &nbsp
+							{{userdetails.gender}}
+						</div>
 
-						</form>
+						<div ng-show="status">
+							<p class="alert alert-info">
+								<i class="fa fa-check-circle" aria-hidden="true"></i>&nbsp &nbsp{{status}}<br />
+							</p>
+						</div>
+
 					</div>
 				</div>
 			</div>
 		</div>
-		
+
+
+
 		<button type="button" class="btn btn-default btn-sm"
 			data-toggle="modal" data-target="#myModal2">Change Password</button>
-
+		<br />
+		<br />
 
 		<!-- Modal for update password -->
 		<div class="modal fade" id="myModal2" role="dialog">
@@ -742,8 +650,105 @@
 			</div>
 		</div>
 
+		<button type="button" class="btn btn-default btn-sm"
+			data-toggle="modal" data-target="#myModal">Update Info</button>
 
 
+		<!-- Modal for update user details -->
+
+		<div class="modal fade" id="myModal" role="dialog">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Update Details</h4>
+					</div>
+					<div class="modal-body">
+						<form name="form" action="#">
+
+
+							<div class="form-group"
+								ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">
+
+								<div class="input-group" style="margin-top: 20px">
+									<span class="input-group-addon"><i class="fa fa-user "
+										aria-hidden="true"></i></span> <input type="text"
+										class="form-control" name="username" id="username"
+										ng-model="userdetails.username" ng-value=userdetails.username
+										required />
+								</div>
+								<span
+									ng-show="form.username.$dirty && form.username.$error.required"
+									class="help-block">Username is required</span>
+							</div>
+
+							<div class="input-group" style="margin-top: 20px">
+								<span class="input-group-addon"><i class="fa fa-phone "
+									aria-hidden="true"></i></span> <input type="tel" class="form-control"
+									ng-value=userdetails.phone ng-model="userdetails.phone" />
+							</div>
+							<div class="input-group" style="margin-top: 20px">
+								<span class="input-group-addon"><i
+									class="fa fa-map-marker fa-lg" aria-hidden="true"></i></span> <input
+									type="text" class="form-control" ng-value=userdetails.city
+									ng-model="userdetails.city" />
+							</div>
+
+							<div class="input-group" style="margin-top: 20px">
+								<span class="input-group-addon"><i class="fa fa-calendar"
+									aria-hidden="true"></i></span> <input type="text" class="form-control"
+									ng-value=userdetails.dob ng-model="userdetails.dob" />
+							</div>
+
+							<div class="input-group" style="margin-top: 20px">
+								<input type="radio" name="gender" ng-model="userdetails.gender"
+									value="Male"> Male &nbsp <input type="radio"
+									ng-model="userdetails.gender" name="gender" value="Female">
+								Female<br>
+							</div>
+
+
+							<div class="modal-footer" style="margin-top: 20px">
+								<input type="submit" ng-click="updateUser()" value="Save"
+									class="btn btn-primary" data-dismiss="modal"
+									ng-disabled="form.username.$dirty && form.username.$error.required">
+							</div>
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+
+	</div>
+
+	<hr />
+
+	<div class="container">
+		<div class="col-md-4 " style="margin-top: 30px">
+
+
+			<a href="viewblogs" class="btn btn-success btn-block btn-outline">
+				<img
+				src="${pageContext.request.contextPath}/resources/images/blog.png"
+				alt="logo" width="40" height="40">&nbsp <b>Blog</b>
+			</a>
+		</div>
+		<div class="col-md-4" style="margin-top: 30px">
+
+			<a href="allusers" class="btn btn-success btn-block btn-outline"><img
+				src="${pageContext.request.contextPath}/resources/images/people.png"
+				alt="logo" width="50" height="40">&nbsp <b>Peoples</b></a>
+		</div>
+		<div class="col-md-4" style="margin-top: 30px">
+
+			<a href="friends" class="btn btn-success btn-block btn-outline"><img
+				src="${pageContext.request.contextPath}/resources/images/friend.png"
+				alt="logo" width="50" height="40">&nbsp <b>Friends</b></a>
+		</div>
 	</div>
 
 	<div class="container">
@@ -751,51 +756,54 @@
 		<security:authorize access="hasRole('ROLE_ADMIN')">
 
 
-		<div>
+			<div>
 
-			<h3>
-				<i class="fa fa-user-secret" aria-hidden="true"></i>&nbsp
-				{{userdetails.role}}
-			</h3>
+				<h3>
+					<i class="fa fa-user-secret" aria-hidden="true"></i>&nbsp
+					{{userdetails.role}}
+				</h3>
 
-			<button ng-click="getAllUsers()" class="btn btn-primary">Get
-				All Users</button>
-				
-			<button ng-click="getAllBlogs()" class="btn btn-primary">Get
-				All Blogs</button>
+				<button ng-click="getAllUsers()" class="btn btn-success">Get
+					All Users</button>
 
 
-			<table class="table" ng-show="allusers">
-			<caption><h3>USERS</h3></caption>
-			
-				<thead>
+				<!-- <button ng-click="getAllBlogs()" class="btn btn-primary">Get
+				All Blogs</button> -->
 
-					<tr>
-						<th>User Name</th>
-						<th>Email</th>
-						<th>Phone</th>
-						<th>City</th>
-						<th>Gender</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr ng-repeat="user in allusers">
-						<td>{{user.username}}</td>
-						<td>{{user.email}}</td>
-						<td>{{user.phone}}</td>
-						<td>{{user.city}}</td>
-						<td>{{user.gender}}</td>
-						<td><button class="btn btn-danger btn-sm"
-								ng-click="deleteUser(user.userId)">DELETE</button></td>
-						
-					</tr>
 
-				</tbody>
-			</table>
-			
-			
-			<table class="table" ng-show="allblogs">
+				<table class="table" ng-show="allusers">
+					<caption>
+						<h3>USERS</h3>
+					</caption>
+
+					<thead>
+
+						<tr>
+							<th>User Name</th>
+							<th>Email</th>
+							<th>Phone</th>
+							<th>City</th>
+							<th>Gender</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="user in allusers">
+							<td>{{user.username}}</td>
+							<td>{{user.email}}</td>
+							<td>{{user.phone}}</td>
+							<td>{{user.city}}</td>
+							<td>{{user.gender}}</td>
+							<td><button class="btn btn-danger btn-sm"
+									ng-click="deleteUser(user.userId)">DELETE</button></td>
+
+						</tr>
+
+					</tbody>
+				</table>
+
+
+				<%-- <table class="table" ng-show="allblogs">
 			<caption><h3>BLOGS</h3></caption>
 				<thead>
 
@@ -827,54 +835,44 @@
 					</tr>
 
 				</tbody>
-			</table>
+			</table> --%>
 
-		</div>
+
+
+			</div>
 
 		</security:authorize>
-		
+
 		<div>
-		
-		<button type="button" class="btn btn-primary btn-sm"
+
+			<!-- <button type="button" class="btn btn-primary btn-sm"
 			data-toggle="modal" data-target="#myBlog">Create Blog</button>
 			
 			<button ng-click="getBlogs()" class="btn btn-primary"> Blogs</button>
 			
 			<div>
-			<table class="table" ng-show="blogs">
-			<caption><h3>BLOGS</h3></caption>
-				<thead>
-
-					<tr>
-						<th>User Name</th>
-						<th>User email</th>
-						<th>Blog Title</th>
-						<th>Blog Description</th>
-						<th>Blog Date</th>
-					
-						<th></th>
-						
-					</tr>
-				</thead>
-				<tbody>
-					<tr ng-repeat="blog in blogs">
-					<td>{{blog.userId.username}}</td>
-					<td>{{blog.userId.email}}</td>
-						<td>{{blog.title}}</td>
-						<td>{{blog.description}}</td>
-						<td>{{blog.blogdate}}</td>
-						
-					</tr>
-
-				</tbody>
-			</table>
 			
-			</div>
-		
-		
-		
-		<!-- Modal for update password -->
-		<div class="modal fade" id="myBlog" role="dialog">
+				<div class="panel-group" ng-show="blogs">
+			    <div class="panel panel-default"  ng-repeat="blog in blogs">
+			      
+			      <div class="panel-body">
+			      <h3>{{blog.title}}</h3><hr/>
+			      <p style="text-align:justify">{{blog.description}}</p>
+			      <hr/>
+			      <h5><b>Posted By:</b> {{blog.userId.username}} <b>On</b> {{blog.blogdate}}</h5>
+			      </div>
+				    </div>
+				   
+				    
+				  
+				</div>
+			
+			</div> -->
+
+
+
+			<!-- Modal for cerate blog -->
+			<!-- 	<div class="modal fade" id="myBlog" role="dialog">
 			<div class="modal-dialog modal-md">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -925,16 +923,16 @@
 				</div>
 			</div>
 		</div>
-		
-		
-		
-		
-		
+		 -->
+
+
+
+
 		</div>
-		
-		
-		
-		
+
+
+
+
 	</div>
 
 	<%@ include file="../templates/footer.jsp"%>

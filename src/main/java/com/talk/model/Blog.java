@@ -9,6 +9,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.Type;
 
 @Entity
 @Table(schema="kkc")
@@ -17,6 +21,7 @@ public final class Blog {
 	@Id @GeneratedValue(strategy=GenerationType.SEQUENCE)
 	private long blogId;
 	private String title;
+	@Type(type="text")
 	private String description;
 	
 	
@@ -24,6 +29,7 @@ public final class Blog {
 	@JoinColumn(name="userId")
 	private User userId;
 	
+	@Temporal(TemporalType.DATE)
 	private Date blogdate;
 	
 	private boolean posted=false;

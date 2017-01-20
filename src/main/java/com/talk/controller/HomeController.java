@@ -103,6 +103,28 @@ public class HomeController {
 		
 	}
 	
+	@RequestMapping("/viewblogs")
+	public String Blogs(){
+		
+		return "blogs";
+		
+	}
+	
+	@RequestMapping("/allusers")
+	public String Users(){
+		
+		return "people";
+		
+	}
+	
+	@RequestMapping("/friends")
+	public String Freinds(){
+		
+		return "friend";
+		
+	}
+	
+	
 /*	@RequestMapping("/userprofile")
 	public ModelAndView userProfile(Principal principal){
 		

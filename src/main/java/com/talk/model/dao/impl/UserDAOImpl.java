@@ -53,5 +53,11 @@ public class UserDAOImpl implements UserDAO {
 		return user;
 	}
 	
+	public List<User> getAllUserExceptMe(String email){
+		Session session = sessionFactory.getCurrentSession();
+		List<User> list = session.createQuery("from User where email<>'"+email+"'").getResultList();	
+		return list;
+	}
+	
 
 }

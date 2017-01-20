@@ -18,18 +18,14 @@
 
 	<div class="container">
 	
-	<%@ include file="../templates/header.jsp"%>
 	
-<!-- 	<h1>
-		Login
-
 	
-		<a href="aboutus" title="About Us" style="float:right"><i
-					class="fa fa-info-circle " aria-hidden="true"></i></a>
-					</h1> -->
+	<h1>
+		Login <a href="aboutus" title="About Us" style="float: right"><i
+			class="fa fa-info-circle " aria-hidden="true"></i></a>
+	</h1>
+	<br/>
 	
-		
-		
 		<div class="col-md-12">
 			<div class="col-md-6">
 
