@@ -469,8 +469,14 @@
 	<%@ include file="../templates/header.jsp"%>
 
 	<div class="container">
+	<div ng-hide="userdetails">
+		<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+		<span class="sr-only">Loading...</span>
+		</div>
+	
 
 		<div class="col-md-6 col-md-offset-3 ">
+		
 			<div class="col-md-6 text-center">
 				<div ng-if="userdetails.gender == 'Male'">
 
@@ -546,7 +552,7 @@
 						</div>
 
 						<div ng-if="userdetails.gender == 'Female'">
-							<i class="fa fa-mars" aria-hidden="true"></i> &nbsp
+							<i class="fa fa-venus" aria-hidden="true"></i> &nbsp
 							{{userdetails.gender}}
 						</div>
 

@@ -176,13 +176,13 @@
 	
 	<button class="btn btn-success " ng-click="viewFriendRequset();">Friend Requests &nbsp<span class="badge">{{countfriendrequests}}</span></button>
 			
-		</div>
+		
 		
 		<!-- <div ng-show="temp">
 		no request
 		</div> -->
 		
-		
+			
 			<div class="panel-group" ng-show="friendrequest">
 				<div class="panel panel-default" ng-repeat="user in friendrequest"
 					style="margin-top: 40px">
@@ -190,9 +190,9 @@
 					<div class="panel-body">
 					<img ng-src="
 					${pageContext.request.contextPath}/resources/images/{{user.friendId.email}}.jpg "
-						class="img-circle" width="40" height="40"
+						class="img-circle"  style="float:left;margin-right:20px" width="80" height="80"
 						 onerror="this.src='${pageContext.request.contextPath}/resources/images/user.jpg'"
-						width="30" height="30" id="sm_profilepic" />
+						width="80" height="80" id="sm_profilepic" />
 						
 						<h3>{{user.friendId.username}}</h3>
 						<i class="fa fa-map-marker" aria-hidden="true"></i>&nbsp&nbsp{{user.friendId.city}}
@@ -227,11 +227,11 @@
 					<div class="panel-body">
 					<img ng-src="
 					${pageContext.request.contextPath}/resources/images/{{user.friendId.email}}.jpg "
-						class="img-circle" width="40" height="40"
+						class="img-circle" style="float:left;margin-right:20px" width="120" height="120"
 						 onerror="this.src='${pageContext.request.contextPath}/resources/images/user.jpg'"
-						width="30" height="30" id="sm_profilepic" />
+						width="120" height="120" id="sm_profilepic" />
 						
-						<h3>{{user.friendId.username}}</h3>
+						<span style="font-size:x-large">{{user.friendId.username}}</span><br>
 						<i class="fa fa-envelope-o" aria-hidden="true"></i>&nbsp&nbsp{{user.friendId.email}}<br/>
 						
 						<i class="fa fa-map-marker" aria-hidden="true"></i>&nbsp&nbsp{{user.friendId.city}}<br/>
@@ -255,6 +255,7 @@
 					</div>
 				</div>
 				
+			</div>
 			</div>
 			
 			
