@@ -174,9 +174,13 @@
 					"myCtrl",
 					[
 							"$scope",
+							"$filter",
 							"UserService",
 							"fileUpload",
-							function($scope, $UserService, $fileUpload) {
+							function($scope, $filter, $UserService, $fileUpload) {
+
+								var date = new Date();
+								$scope.time = $filter('date')(new Date(), 'HH');
 
 								//get user data when page loads
 
@@ -469,110 +473,142 @@
 	<%@ include file="../templates/header.jsp"%>
 
 	<div class="container">
-	<div ng-hide="userdetails">
-		<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-		<span class="sr-only">Loading...</span>
+
+		<div class="col-md-3">
+			
+
+			<div>
+				<div ng-if="time<12">
+					<img alt="good morning"
+						ng-src="${pageContext.request.contextPath}/resources/images/morning.jpg"
+						width="50" height="50"> Good Morning
+				</div>
+
+				<div ng-if="time>=12 && time<=17">
+					<img alt="good morning"
+						ng-src="${pageContext.request.contextPath}/resources/images/afternoon.jpg"
+						width="50" height="50"> Good Afternoon
+				</div>
+
+				<div ng-if="time>17 && time<24">
+					<img alt="good morning"
+						ng-src="${pageContext.request.contextPath}/resources/images/evening.jpg"
+						width="50" height="50"> <span class="text-muted">Good
+						Evening</span>
+				</div>
+			</div>
 		</div>
-	
-
-		<div class="col-md-6 col-md-offset-3 ">
-		
-			<div class="col-md-6 text-center">
-				<div ng-if="userdetails.gender == 'Male'">
-
-					<img ng-src="{{userdetails.Image}}" width="150" height="150"
-						id="profilepic"
-						onerror="this.src='${pageContext.request.contextPath}/resources/images/male_dummy.jpg'">
-				</div>
-				<div ng-if="userdetails.gender == 'Female'">
-					<img ng-src="{{userdetails.Image}}" width="150" height="150"
-						id="profilepic"
-						onerror="this.src='${pageContext.request.contextPath}/resources/images/female_dummy.jpg'">
-				</div>
 
 
 
 
-				<div>
-					<button type="button" class="btn btn-link"
-						ng-click="openFileChooser();">Change Picture</button>
+		<div class="col-md-3 text-center">
+			<div ng-if="userdetails.gender == 'Male'">
 
-					<input type="file" id="trigger" ng-show="false"
-						onchange="angular.element(this).scope().setFile(this)"
-						accept="image/*" file-model="myFile" />
-
-
-					<button ng-click="DeletePic();" class="btn btn-danger btn-sm"
-						title="delete picture" ng-disabled="picDeleted">
-						<i class="fa fa-trash-o fa-1x" aria-hidden="true"></i>
-					</button>
-
+				<img ng-src="{{userdetails.Image}}" width="150" height="150"
+					id="profilepic"
+					onerror="this.src='${pageContext.request.contextPath}/resources/images/male_dummy.jpg'">
+			</div>
+			<div ng-if="userdetails.gender == 'Female'">
+				<img ng-src="{{userdetails.Image}}" width="150" height="150"
+					id="profilepic"
+					onerror="this.src='${pageContext.request.contextPath}/resources/images/female_dummy.jpg'">
+			</div>
 
 
 
-				</div>
+
+			<div>
+				<button type="button" class="btn btn-link"
+					ng-click="openFileChooser();">Change Picture</button>
+
+				<input type="file" id="trigger" ng-show="false"
+					onchange="angular.element(this).scope().setFile(this)"
+					accept="image/*" file-model="myFile" />
+
+
+				<button ng-click="DeletePic();" class="btn btn-danger btn-sm"
+					title="delete picture" ng-disabled="picDeleted">
+					<i class="fa fa-trash-o fa-1x" aria-hidden="true"></i>
+				</button>
+
 
 
 
 			</div>
 
-			<div class="col-md-6 text-center">
 
 
-				<div style="display: inline-block;">
+		</div>
 
-					<div style="text-align: left">
-						<div>
-							<span style="font-size: xx-large;">
-								{{userdetails.username}}</span>
-						</div>
+		<div class="col-md-3 text-center">
 
-						<div>
-							<i class="fa fa-envelope-o" aria-hidden="true"></i>&nbsp
-							{{userdetails.email}}
-						</div>
-						<div>
-							<i class="fa fa-phone" aria-hidden="true"></i> &nbsp
-							{{userdetails.phone}}
-						</div>
 
-						<div>
-							<i class="fa fa-map-marker" aria-hidden="true"></i>&nbsp&nbsp
-							{{userdetails.city}}
-						</div>
+			<div style="display: inline-block;">
 
-						<div>
-							<i class="fa fa-birthday-cake" aria-hidden="true"></i>&nbsp
-							{{userdetails.dob}}
-						</div>
-
-						<div ng-if="userdetails.gender == 'Male'">
-							<i class="fa fa-mars" aria-hidden="true"></i> &nbsp
-							{{userdetails.gender}}
-						</div>
-
-						<div ng-if="userdetails.gender == 'Female'">
-							<i class="fa fa-venus" aria-hidden="true"></i> &nbsp
-							{{userdetails.gender}}
-						</div>
-
-						<div ng-show="status">
-							<p class="alert alert-info">
-								<i class="fa fa-check-circle" aria-hidden="true"></i>&nbsp &nbsp{{status}}<br />
-							</p>
-						</div>
-
+				<div style="text-align: left">
+				
+				<div ng-hide="userdetails">
+				<i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i> <span
+					class="sr-only">Loading...</span>
+			</div>
+					<div>
+						<span style="font-size: xx-large;">
+							{{userdetails.username}}</span>
 					</div>
+
+					<div>
+						<i class="fa fa-envelope-o" aria-hidden="true"></i>&nbsp
+						{{userdetails.email}}
+					</div>
+					<div>
+						<i class="fa fa-phone" aria-hidden="true"></i> &nbsp
+						{{userdetails.phone}}
+					</div>
+
+					<div>
+						<i class="fa fa-map-marker" aria-hidden="true"></i>&nbsp&nbsp
+						{{userdetails.city}}
+					</div>
+
+					<div>
+						<i class="fa fa-birthday-cake" aria-hidden="true"></i>&nbsp
+						{{userdetails.dob}}
+					</div>
+
+					<div ng-if="userdetails.gender == 'Male'">
+						<i class="fa fa-mars" aria-hidden="true"></i> &nbsp
+						{{userdetails.gender}}
+					</div>
+
+					<div ng-if="userdetails.gender == 'Female'">
+						<i class="fa fa-venus" aria-hidden="true"></i> &nbsp
+						{{userdetails.gender}}
+					</div>
+
+					<div ng-show="status">
+						<p class="alert alert-info">
+							<i class="fa fa-check-circle" aria-hidden="true"></i>&nbsp
+							&nbsp{{status}}<br />
+						</p>
+					</div>
+
 				</div>
 			</div>
 		</div>
 
 
+		<div class="col-md-3">
+			<button type="button" class="btn btn-default btn-sm"
+				data-toggle="modal" data-target="#myModal2">Change Password</button>
+			<br /> <br />
 
-		<button type="button" class="btn btn-default btn-sm"
-			data-toggle="modal" data-target="#myModal2">Change Password</button>
-		<br />
-		<br />
+			<button type="button" class="btn btn-default btn-sm"
+				data-toggle="modal" data-target="#myModal">Update Info</button>
+
+		</div>
+
+
 
 		<!-- Modal for update password -->
 		<div class="modal fade" id="myModal2" role="dialog">
@@ -656,8 +692,6 @@
 			</div>
 		</div>
 
-		<button type="button" class="btn btn-default btn-sm"
-			data-toggle="modal" data-target="#myModal">Update Info</button>
 
 
 		<!-- Modal for update user details -->
@@ -760,10 +794,7 @@
 	<div class="container">
 
 		<security:authorize access="hasRole('ROLE_ADMIN')">
-
-
-			<div>
-
+		<div>
 				<h3>
 					<i class="fa fa-user-secret" aria-hidden="true"></i>&nbsp
 					{{userdetails.role}}

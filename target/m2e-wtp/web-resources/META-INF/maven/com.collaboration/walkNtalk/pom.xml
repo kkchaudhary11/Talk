@@ -122,8 +122,6 @@
 			<version>4.0.0.RELEASE</version>
 		</dependency>
 		
-		
-		
 		 <dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
@@ -186,6 +184,31 @@
 		   <version>1.2.1</version> <!-- makesure correct version here -->
 		</dependency>
 		
+		 
+		<dependency>
+		 <groupId>${spring.groupId}</groupId>
+  		<artifactId>${spring.artId}-websocket</artifactId>
+  		<version>${spring.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>${spring.groupId}</groupId>
+	  		<artifactId>${spring.artId}-messaging</artifactId>
+	  		<version>${spring.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.websocket</groupId>
+			<artifactId>javax.websocket-api</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		
+			<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>1.7.7</version>
+		</dependency>
 		
     
   </dependencies>
