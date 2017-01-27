@@ -75,3 +75,11 @@ position: absolute;
 .btn-danger.btn-outline:hover {
     color: #fff;
 }
+
+.message .self {
+  font-weight: 600;
+}
+
+.count.danger {
+  color: #a94442;
+}

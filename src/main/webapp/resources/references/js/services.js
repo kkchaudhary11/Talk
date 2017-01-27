@@ -36,6 +36,7 @@
       var message = JSON.parse(data), out = {};
       out.message = message.message;
       out.time = new Date(message.time);
+      out.username = message.userName;
       if (_.contains(messageIds, message.id)) {
         out.self = true;
         messageIds = _.remove(messageIds, message.id);

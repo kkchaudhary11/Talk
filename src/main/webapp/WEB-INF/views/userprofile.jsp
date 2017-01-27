@@ -380,88 +380,7 @@
 
 								};
 
-								/* 		// post the blog
-										
-										$scope.postBlog = function() {
-
-											console
-													.log("in the post blog");
-											$scope.UserBlog = {
-													Username : $scope.userdetails.username,
-													BlogTitle : $scope.user.blogTitle,
-													BlogDesc : $scope.user.blogDesc,
-													
-												};
-
-											$UserService
-													.postBlog(
-															$scope.UserBlog)
-													.then(
-															function(response) {
-																try {
-																	$scope.status = response.status;
-																} catch (e) {
-																	$scope.data = [];
-																}
-
-															},
-															function(errResponse) {
-																console
-																		.error('Error while Sending Data.');
-															});
-
-										}
-										
-										//list all blogs [ADMIN]
-										
-										$scope.getAllBlogs = function() {
-											$UserService
-													.getAllBlogs()
-													.then(
-															function(response) {
-
-																$scope.allblogs = response;
-															},
-															function(errResponse) {
-																console
-																		.log('Error fetching Users');
-															});
-										}
-										
-										//list all blogs [ADMIN]
-										
-										$scope.publishBlog = function(blogId) {
-												console.log(blogId);
-										
-												$UserService
-												.publishBlog(blogId)
-												.then(
-														function(response) {
-
-															$scope.status = response.status;
-														},
-														function(errResponse) {
-															console
-																	.log('Error fetching Users');
-														});
-										}
-										
-										//list blogs
-										
-										$scope.getBlogs = function() {
-											$UserService
-													.getBlogs()
-													.then(
-															function(response) {
-
-																$scope.blogs = response;
-															},
-															function(errResponse) {
-																console
-																		.log('Error fetching Users');
-															});
-										}
-								 */
+								
 
 							} ]);
 </script>
@@ -789,6 +708,15 @@
 				src="${pageContext.request.contextPath}/resources/images/friend.png"
 				alt="logo" width="50" height="40">&nbsp <b>Friends</b></a>
 		</div>
+		
+			<div class="col-md-4" style="margin-top: 30px">
+
+			<a href="talk" class="btn btn-success btn-block btn-outline"><img
+				src="${pageContext.request.contextPath}/resources/images/group-chat.png"
+				alt="logo" width="40" height="40">&nbsp <b>Group Chat</b></a>
+		</div>
+		
+		
 	</div>
 
 	<div class="container">
@@ -839,131 +767,11 @@
 					</tbody>
 				</table>
 
-
-				<%-- <table class="table" ng-show="allblogs">
-			<caption><h3>BLOGS</h3></caption>
-				<thead>
-
-					<tr>
-						<th>User Name</th>
-						<th>User email</th>
-						<th>Blog Title</th>
-						<th>Blog Description</th>
-						<th>Blog Date</th>
-						<th>Posted</th>
-						<th></th>
-						<th></th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr ng-repeat="blog in allblogs">
-					<td>{{blog.userId.username}}</td>
-					<td>{{blog.userId.email}}</td>
-						<td>{{blog.title}}</td>
-						<td>{{blog.description}}</td>
-						<td>{{blog.blogdate}}</td>
-						<td>{{blog.posted}}</td>
-						
-						<td><i class="fa fa-trash-o fa-2x" aria-hidden="true" title="Delete"></i></td>
-						<td><a href="#" ng-click="publishBlog(blog.blogId)"><i class="fa fa-check fa-2x" aria-hidden="true" title="Publish"></i></a></td>
-						<td><i class="fa fa-times fa-2x" aria-hidden="true" title="Unpublish"></i></td>
-						
-					</tr>
-
-				</tbody>
-			</table> --%>
-
-
-
 			</div>
 
 		</security:authorize>
 
 		<div>
-
-			<!-- <button type="button" class="btn btn-primary btn-sm"
-			data-toggle="modal" data-target="#myBlog">Create Blog</button>
-			
-			<button ng-click="getBlogs()" class="btn btn-primary"> Blogs</button>
-			
-			<div>
-			
-				<div class="panel-group" ng-show="blogs">
-			    <div class="panel panel-default"  ng-repeat="blog in blogs">
-			      
-			      <div class="panel-body">
-			      <h3>{{blog.title}}</h3><hr/>
-			      <p style="text-align:justify">{{blog.description}}</p>
-			      <hr/>
-			      <h5><b>Posted By:</b> {{blog.userId.username}} <b>On</b> {{blog.blogdate}}</h5>
-			      </div>
-				    </div>
-				   
-				    
-				  
-				</div>
-			
-			</div> -->
-
-
-
-			<!-- Modal for cerate blog -->
-			<!-- 	<div class="modal fade" id="myBlog" role="dialog">
-			<div class="modal-dialog modal-md">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4 class="modal-title">Create Blog</h4>
-					</div>
-					<div class="modal-body">
-						<form name="blog" action="#">
-
-							<div class="form-group"
-								ng-class="{ 'has-error': blog.title.$dirty && blog.title.$error.required }">
-
-								<div class="input-group" style="margin-top: 20px">
-									<span class="input-group-addon"><i class="fa fa-pencil" aria-hidden="true"></i></span> 
-									<input type="text" class="form-control" name="title"
-										id="title" placeholder="Enter title"
-										ng-model="user.blogTitle" required></textarea> 
-								</div>
-								<span
-									ng-show="blog.title.$dirty && blog.title.$error.required"
-									class="help-block">Required</span>
-							</div>
-
-
-							<div class="form-group"
-								ng-class="{ 'has-error': blog.my_blog.$dirty && blog.my_blog.$error.required }">
-
-								<div class="input-group" style="margin-top: 20px">
-									<span class="input-group-addon"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></span> 
-									<textarea rows="7"  class="form-control" name="my_blog"
-										id="my_blog" placeholder="Enter Description"
-										ng-model="user.blogDesc" required></textarea> 
-								</div>
-								<span
-									ng-show="blog.my_blog.$dirty && blog.my_blog.$error.required"
-									class="help-block">Required</span>
-							</div>
-
-							<div class="modal-footer" style="margin-top: 20px">
-								<input type="submit" ng-click="postBlog()" value="Post"
-									class="btn btn-primary" data-dismiss="modal"
-									ng-disabled="blog.my_blog.$error.required">
-							</div>
-
-
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-		 -->
-
-
-
 
 		</div>
 
