@@ -38,10 +38,10 @@
     	</bean>
     	
     	<websocket:message-broker application-destination-prefix="/app" >
-    <websocket:stomp-endpoint path="/chat" >
+    <websocket:stomp-endpoint path="/chat, /privatechat">
                 <websocket:sockjs/>
         </websocket:stomp-endpoint>
-    <websocket:simple-broker prefix="/topic"/>
+    <websocket:simple-broker prefix="/topic, /queue"/>
   		</websocket:message-broker>
  	
  	</beans>

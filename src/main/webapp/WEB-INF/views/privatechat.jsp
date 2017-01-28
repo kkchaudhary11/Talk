@@ -37,7 +37,7 @@
 						class="message bg-info" style="padding:10px" >
 						<span class="pull-right">{{message.time | date:'h:mma'}}</span>
 						<span ng-class="{self: message.self}" style="font-size:18px">{{message.message}}</span><br />
-						<span ng-hide="message.self">Send By : {{message.username}}</span>
+						
 					</p>
 
 				</div>
@@ -54,13 +54,13 @@
 	<script
 		src="${pageContext.request.contextPath}/resources/references/js/lodash.min.js"></script>
 	<script
-		src="${pageContext.request.contextPath}/resources/references/groupchat/app.js"
+		src="${pageContext.request.contextPath}/resources/references/privatechat/app.js"
 		type="text/javascript"></script>
 	<script
-		src="${pageContext.request.contextPath}/resources/references/groupchat/controllers.js"
+		src="${pageContext.request.contextPath}/resources/references/privatechat/controllers.js"
 		type="text/javascript"></script>
 	<script
-		src="${pageContext.request.contextPath}/resources/references/groupchat/services.js"
+		src="${pageContext.request.contextPath}/resources/references/privatechat/services.js"
 		type="text/javascript"></script>
 </body>
 

@@ -2,15 +2,7 @@ package com.talk.dto;
 
 import java.util.Date;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.talk.dao.UserDAO;
-
 public class OutputMessage extends Message {
-
-	@Autowired
-	UserDAO userdao;
-
 	
 	private Date time;
 	
