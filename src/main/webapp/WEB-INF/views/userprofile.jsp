@@ -700,13 +700,13 @@
 
 			<a href="allusers" class="btn btn-success btn-block btn-outline"><img
 				src="${pageContext.request.contextPath}/resources/images/people.png"
-				alt="logo" width="50" height="40">&nbsp <b>Peoples</b></a>
+				alt="logo" width="40" height="40">&nbsp <b>Peoples</b></a>
 		</div>
 		<div class="col-md-4" style="margin-top: 30px">
 
 			<a href="friends" class="btn btn-success btn-block btn-outline"><img
 				src="${pageContext.request.contextPath}/resources/images/friend.png"
-				alt="logo" width="50" height="40">&nbsp <b>Friends</b></a>
+				alt="logo" width="40" height="40">&nbsp <b>Friends</b></a>
 		</div>
 		
 			<div class="col-md-4" style="margin-top: 30px">

@@ -92,6 +92,7 @@ public class HomeController {
 	public ModelAndView User(Principal p){
 		
 		if(p!=null){
+						
 			ModelAndView model = new ModelAndView("userprofile");
 			return model;
 		}
@@ -124,33 +125,6 @@ public class HomeController {
 		
 	}
 	
-	
-/*	@RequestMapping("/userprofile")
-	public ModelAndView userProfile(Principal principal){
-		
-		ModelAndView model = new ModelAndView("userprofile");
-		//username is email-id of the user
-		String username = principal.getName();
-		
-		System.out.println(username);
-		User user = userdao.getUserByEmail(username);
-		
-		if(user != null ){
-			
-			model.addObject("name",user.getUsername());
-			model.addObject("email",user.getEmail());
 
-			model.addObject("dob",user.getDob());
-
-			model.addObject("phone",user.getPhone());
-
-			model.addObject("city",user.getCity());
-
-			model.addObject("gender",user.getGender());
-			
-		}
-		
-		return model;
-	}*/
 
 }

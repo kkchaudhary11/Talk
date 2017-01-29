@@ -8,6 +8,9 @@
 	<%@ include file="../templates/header.jsp"%>
 
 	<div ng-controller="ChatCtrl" class="container">
+	<h2 style="color:#00a652"><img
+				src="${pageContext.request.contextPath}/resources/images/group-chat.png"
+				alt="logo" width="30" height="30">&nbsp Group Talk</h2>
 		<div class="col-md-6 col-md-offset-3">
 			<form ng-submit="addMessage()" name="messageForm">
 
@@ -34,10 +37,10 @@
 				<div class="panel-body" style="overflow-y: scroll; height: 350px;">
 
 					<p ng-repeat="message in messages | orderBy:'time':true"
-						class="message bg-info" style="padding:10px" >
+						class="message well well-sm" style="padding:10px" >
 						<span class="pull-right">{{message.time | date:'h:mma'}}</span>
-						<span ng-class="{self: message.self}" style="font-size:18px">{{message.message}}</span><br />
-						<span ng-hide="message.self">Send By : {{message.username}}</span>
+						<span ng-class="{self: message.self}" style="font-size:15px">{{message.message}}</span><br />
+						<span ng-hide="message.self">SEND BY : {{message.username}}</span>
 					</p>
 
 				</div>

@@ -64,7 +64,6 @@ public class RESTFriendController {
 		json.put("status", "FRIEND REQUEST SEND");
 		System.out.println(json.toString());
 		
-		
 		return new ResponseEntity<String>(json.toString(),HttpStatus.CREATED);
 	}
 	
@@ -73,9 +72,7 @@ public class RESTFriendController {
 	public ResponseEntity<List<Friend>> friendRequest(Principal p){
 		
 		User user = userdao.getUserByEmail(p.getName());
-		
 		long id = user.getUserId();
-		
 		
 		List<Friend> list  = frienddao.getFriendRequsts(id);
 		
@@ -101,12 +98,8 @@ public class RESTFriendController {
 		friend2.setStatus("ACCEPTED");
 		frienddao.updateFriend(friend2);
 		
-
-
 		List<Friend> list = frienddao.getFriendRequsts(loggedInUserId);
 	
-		
-		
 		return new ResponseEntity<List<Friend>>(list,HttpStatus.CREATED);
 	}
 	
@@ -133,8 +126,6 @@ public class RESTFriendController {
 		
 		List<Friend> list = frienddao.getFriendRequsts(loggedInUserId);
 	
-		
-		
 		return new ResponseEntity<List<Friend>>(list,HttpStatus.CREATED);
 	}
 	
@@ -144,9 +135,7 @@ public class RESTFriendController {
 		User user = userdao.getUserByEmail(p.getName());
 		long userId = user.getUserId();
 		
-		
 		List<Friend> list = frienddao.listFriends(userId);
-		
 		
 		return new ResponseEntity<List<Friend>>(list,HttpStatus.OK);
 	}
@@ -158,14 +147,12 @@ public class RESTFriendController {
 		long userId = user.getUserId();
 		
 		int count = frienddao.countFriendRequset(userId);
-		
 		System.out.println(count);
 		
 		JSONObject json = new JSONObject();
 
 		json.put("count", count);
 		System.out.println(json.toString());
-		
 		
 		return new ResponseEntity<String>(json.toString(),HttpStatus.CREATED);
 		

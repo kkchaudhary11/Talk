@@ -29,7 +29,6 @@
 	 service.rejectFriendRequset = rejectFriendRequset;
 	 service.getFriends = getFriends;
 	 service.countFriendRequests = countFriendRequests;
-	 service.sendFriendId = sendFriendId;
 	 
 	 return service;
 	 
@@ -86,11 +85,7 @@
 					}); 
 	 }
 	 
-	 function sendFriendId(friendId){
-		 console.log(friendId);
-		 console.log("inside the sendFriendId service");
-		 return $http.get(BASE_URL + 'talk/getFrindId/'+friendId);
-	 }
+	
 	 
 	 
 	 
@@ -104,8 +99,7 @@
      $scope.viewFriendRequset = viewFriendRequset;
      $scope.acceptFriendRequset = acceptFriendRequset;
      $scope.rejectFriendRequset = rejectFriendRequset;
-     $scope.sendFriendId = sendFriendId;
-     
+        
      getFriends();
      countFriendRequests();
 	 
@@ -163,11 +157,7 @@
 								console.log('Error fetching Users');
 							});
 		}
-	 
-	 function sendFriendId(friendId) {
-		 FriendService.sendFriendId(friendId);
-		}
-	 
+	
 	 
  }
  
@@ -182,7 +172,9 @@
 
 
 <div class="container">
-<h2>Friends</h2>
+<h2><img
+				src="${pageContext.request.contextPath}/resources/images/friend.png"
+				alt="logo" width="30" height="30">&nbsp Friends</h2>
 <div class="col-md-4 col-md-offset-4">
 	
 	
@@ -262,10 +254,9 @@
 					
 				</div>
 				<hr/>
-						<!-- <button class="btn btn-success btn-sm" ng-click="http://localhost:9999/Talk/talk/getFriendId/user.friendId.userId"><i class="fa fa-paper-plane-o" aria-hidden="true"></i>&nbsp SEND MESSAGE</button>
-						 -->
+						
 						 
-						 <a href="http://localhost:9999/Talk/talk/getfriendid/{{user.friendId.userId}}">send</a>
+						 <a href="http://localhost:9999/Talk/talk/friendchat/{{user.friendId.userId}}" class="btn btn-success btn-sm"><i class="fa fa-paper-plane-o" aria-hidden="true"></i>&nbsp SEND MESSAGE</a>
 					</div>
 				</div>
 				
