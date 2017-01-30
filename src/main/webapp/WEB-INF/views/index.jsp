@@ -34,7 +34,8 @@
 						<span><b>TRY AGAIN!</b> Invalid Email or password.</span>
 					</p>
 				</c:if>
-				<c:if test="${param.logout != null}">
+				
+				<c:if test="${status == true}">
 					<p class="alert alert-success">
 						<span>You have been logged out successfully.</span>
 					</p>
@@ -54,7 +55,7 @@
 					<div class="input-group">
 						<span class="input-group-addon"><i class="fa fa-user fa-lg"
 							aria-hidden="true"></i></span> <input id="msg" type="text"
-							class="form-control" name="username" placeholder="Enter email">
+							class="form-control" name="username" placeholder="Enter email" autofocus>
 					</div>
 
 				</div>

@@ -7,7 +7,7 @@ import com.talk.model.User;
 public interface UserDAO {
 	
 	public void addUser(User user);
-	public void deleteUser(int id);
+	public void deleteUser(User user);
 	public void updateUser(User user);
 	public User getUserById(int id);
 	public User getUserByEmail(String email);

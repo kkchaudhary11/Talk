@@ -51,6 +51,16 @@
 								});
 					},
 
+					unpublishBlog : function(item) {
+						return $http.post(BASE_URL + 'unpublishblog', item)
+								.then(function(response) {
+									return response.data;
+								}, function(errResponse) {
+									console.error('Error while sending data');
+									return $q.reject(errResponse);
+								});
+					},
+
 					getBlogs : function() {
 						return $http.get(BASE_URL + 'blogs').then(
 								function(response) {
@@ -74,10 +84,8 @@
 
 					console.log("in the post blog");
 					$scope.UserBlog = {
-
 						BlogTitle : $scope.user.blogTitle,
 						BlogDesc : $scope.user.blogDesc,
-
 					};
 
 					$BlogService.postBlog($scope.UserBlog).then(
@@ -105,12 +113,25 @@
 					});
 				}
 
-				//list all blogs [ADMIN]
+				//publish blog [ADMIN]
 
 				$scope.publishBlog = function(blogId) {
 					console.log(blogId);
 
 					$BlogService.publishBlog(blogId).then(function(response) {
+
+						$scope.status = response.status;
+					}, function(errResponse) {
+						console.log('Error fetching Users');
+					});
+				}
+
+				//unpublish blog [ADMIN]
+
+				$scope.unpublishBlog = function(blogId) {
+					console.log(blogId);
+
+					$BlogService.unpublishBlog(blogId).then(function(response) {
 
 						$scope.status = response.status;
 					}, function(errResponse) {
@@ -135,9 +156,7 @@
 
 	<%@ include file="../templates/header.jsp"%>
 
-
 	<div class="container">
-
 
 		<div ng-show="status">
 			<p class="alert alert-info">
@@ -173,7 +192,7 @@
 											aria-hidden="true"></i></span> <input type="text"
 											class="form-control" name="title" id="title"
 											placeholder="Enter title" ng-model="user.blogTitle" required>
-										</textarea>
+
 									</div>
 									<span ng-show="blog.title.$dirty && blog.title.$error.required"
 										class="help-block">Required</span>
@@ -198,10 +217,8 @@
 								<div class="modal-footer" style="margin-top: 20px">
 									<input type="submit" ng-click="postBlog()" value="Post"
 										class="btn btn-primary" data-dismiss="modal"
-										ng-disabled="blog.my_blog.$error.required">
+										ng-disabled="blog.my_blog.$error.required || blog.title.$error.required">
 								</div>
-
-
 							</form>
 						</div>
 					</div>
@@ -209,17 +226,13 @@
 			</div>
 
 		</security:authorize>
-
 		<security:authorize access="hasRole('ROLE_ADMIN')">
-
 
 			<div>
 
-
-
 				<%-- <security:authorize access="isAuthenticated()">
-    authenticated as <security:authentication property="principal.username" /> 
-</security:authorize> --%>
+   	 authenticated as <security:authentication property="principal.username" /> 
+		</security:authorize> --%>
 
 				<div class=col-md-12>
 					<div class="col-md-4 col-md-offset-4">
@@ -232,7 +245,7 @@
 				<h2 ng-show="allblogs">Approve Blogs</h2>
 
 				<div class="panel-group" ng-show="allblogs">
-					<div class="panel panel-default" ng-repeat="blog in allblogs"
+					<div class="panel panel-default" ng-repeat="blog in allblogs | orderBy:'blogdate':true"
 						style="margin-top: 40px">
 
 						<div class="panel-body">
@@ -246,22 +259,14 @@
 							</h5>
 							<b>Is Published:</b> <i>{{blog.posted}}</i>
 							<div class="pull-right">
-								<i class="fa fa-trash-o fa-2x" aria-hidden="true" title="Delete"></i>
-								&nbsp <a href="#" ng-click="publishBlog(blog.blogId)"><i
+								<a href="#" ng-click="publishBlog(blog.blogId)"><i
 									class="fa fa-check fa-2x" aria-hidden="true" title="Publish"></i></a>&nbsp
-								<i class="fa fa-times fa-2x" aria-hidden="true"
-									title="Unpublish"></i>
+								<a href="#" ng-click="unpublishBlog(blog.blogId)"><i
+									class="fa fa-times fa-2x" aria-hidden="true" title="Unpublish"></i></a>
 							</div>
 						</div>
 					</div>
-
-
-
 				</div>
-
-
-
-
 			</div>
 
 		</security:authorize>
@@ -269,7 +274,7 @@
 		<h2>Blogs</h2>
 		<div>
 			<div class="panel-group" ng-show="blogs">
-				<div class="panel panel-default" ng-repeat="blog in blogs"
+				<div class="panel panel-default" ng-repeat="blog in blogs | orderBy:'blogdate':true"
 					style="margin-top: 40px">
 
 					<div class="panel-body">
@@ -283,14 +288,8 @@
 						</h5>
 					</div>
 				</div>
-
 			</div>
-
 		</div>
-
-
-
-
 	</div>
 
 	<%@ include file="../templates/footer.jsp"%>

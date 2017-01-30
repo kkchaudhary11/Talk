@@ -19,14 +19,16 @@
 	<security:http auto-config="true">
 		<!-- Restrict URLs based on role -->
 		<security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
+		
+		<security:intercept-url pattern="/user/**" access="hasRole('ROLE_USER')" />
 		<security:intercept-url pattern="/**"
 			access="permitAll or hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')" />
 		<!-- Override default login and logout pages -->
 		<security:form-login login-page="/index"
 			username-parameter="username" password-parameter="password"
 			default-target-url="/userprofile" authentication-failure-url="/index?error=1" />
-	<!-- 	<security:logout logout-url="/logout"
-			logout-success-url="/loginpage?logout" /> -->
+	 	<!-- <security:logout logout-url="/logoutuser"
+			logout-success-url="/index?logout" />  -->
 			
 		
 		<security:csrf disabled="true" />

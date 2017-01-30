@@ -50,7 +50,7 @@
 					</ul></li>
 
 
-				<li><a href="logout" title="logout" class="pull-right"><i
+				<li><a href="logoutuser" title="logout" class="pull-right"><i
 						class="fa fa-power-off fa-2x" aria-hidden="true"></i></a></li>
 			</ul>
 

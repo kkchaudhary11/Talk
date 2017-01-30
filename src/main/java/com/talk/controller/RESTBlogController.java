@@ -94,6 +94,30 @@ public class RESTBlogController {
 		return new ResponseEntity<String>(json.toString(), HttpStatus.CREATED);
 
 	}
+	
+	@PostMapping("/unpublishblog")
+	public ResponseEntity<String> unPublishBlog(@RequestBody String inputdata) {
+		System.out.println(inputdata);
+
+		int blogid = Integer.parseInt(inputdata);
+
+		System.out.println(blogid);
+
+		Blog blog = blogdao.getBlogById(blogid);
+
+		blog.setPosted(false);
+
+		// update blog
+		blogdao.addBlog(blog);
+
+		JSONObject json = new JSONObject();
+
+		json.put("status", "BLOG UNPUBLISHED");
+		System.out.println(json.toString());
+
+		return new ResponseEntity<String>(json.toString(), HttpStatus.CREATED);
+
+	}
 
 	@GetMapping("/blogs")
 	public ResponseEntity<List<Blog>> blogs() {

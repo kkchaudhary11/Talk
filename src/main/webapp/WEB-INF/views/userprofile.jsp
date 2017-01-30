@@ -86,9 +86,29 @@
 								});
 					},
 
-					deleteUser : function(item) {
-						return $http.post(BASE_URL + 'deleteuser', item).then(
-								function(response) {
+					disableUser : function(item) {
+						return $http.post(BASE_URL + 'admin/disableuser', item)
+								.then(function(response) {
+									return response.data;
+								}, function(errResponse) {
+									console.error('Error while sending data');
+									return $q.reject(errResponse);
+								});
+					},
+
+					enableUser : function(item) {
+						return $http.post(BASE_URL + 'admin/enableuser', item)
+								.then(function(response) {
+									return response.data;
+								}, function(errResponse) {
+									console.error('Error while sending data');
+									return $q.reject(errResponse);
+								});
+					},
+
+					makeAdmin : function(item) {
+						return $http.post(BASE_URL + 'admin/makeadmin', item)
+								.then(function(response) {
 									return response.data;
 								}, function(errResponse) {
 									console.error('Error while sending data');
@@ -125,46 +145,6 @@
 									return $q.reject(errResponse);
 								});
 					},
-
-				/* 	postBlog : function(item) {
-						return $http.post(BASE_URL + 'postblog', item).then(
-								function(response) {
-									return response.data;
-								}, function(errResponse) {
-									console.error('Error while sending data');
-									return $q.reject(errResponse);
-								});
-					},
-					
-					getAllBlogs : function() {
-						return $http.get(BASE_URL + 'admin/allblogs').then(
-								function(response) {
-									return response.data;
-								}, function(errResponse) {
-									return $q.reject(errResponse);
-								});
-					},
-					
-
-					publishBlog : function(item) {
-						return $http.post(BASE_URL + 'publishblog', item).then(
-								function(response) {
-									return response.data;
-								}, function(errResponse) {
-									console.error('Error while sending data');
-									return $q.reject(errResponse);
-								});
-					}
-					,
-					
-					getBlogs : function() {
-						return $http.get(BASE_URL + 'blogs').then(
-								function(response) {
-									return response.data;
-								}, function(errResponse) {
-									return $q.reject(errResponse);
-								});
-					} */
 
 				};
 			} ]);
@@ -232,11 +212,49 @@
 													});
 								}
 
-								//delete user [ADMIN]
+								//disable user [ADMIN]
 
-								$scope.deleteUser = function(userId) {
+								$scope.disableUser = function(userId) {
 									$UserService
-											.deleteUser(userId)
+											.disableUser(userId)
+											.then(
+													function(response) {
+														try {
+															$scope.allusers = response;
+														} catch (e) {
+															$scope.data = [];
+														}
+														/* 		console.log($scope.allusers); */
+													},
+													function(errResponse) {
+														console
+																.error('Error while Sending Data.');
+													});
+								}
+
+								//enable user [ADMIN]
+								$scope.enableUser = function(userId) {
+									$UserService
+											.enableUser(userId)
+											.then(
+													function(response) {
+														try {
+															$scope.allusers = response;
+														} catch (e) {
+															$scope.data = [];
+														}
+														/* 		console.log($scope.allusers); */
+													},
+													function(errResponse) {
+														console
+																.error('Error while Sending Data.');
+													});
+								}
+
+								//make user ADMIN [ADMIN]
+								$scope.makeAdmin = function(userId) {
+									$UserService
+											.makeAdmin(userId)
 											.then(
 													function(response) {
 														try {
@@ -380,8 +398,6 @@
 
 								};
 
-								
-
 							} ]);
 </script>
 
@@ -394,7 +410,7 @@
 	<div class="container">
 
 		<div class="col-md-3">
-			
+
 
 			<div>
 				<div ng-if="time<12">
@@ -466,11 +482,11 @@
 			<div style="display: inline-block;">
 
 				<div style="text-align: left">
-				
-				<div ng-hide="userdetails">
-				<i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i> <span
-					class="sr-only">Loading...</span>
-			</div>
+
+					<div ng-hide="userdetails">
+						<i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i> <span
+							class="sr-only">Loading...</span>
+					</div>
 					<div>
 						<span style="font-size: xx-large;">
 							{{userdetails.username}}</span>
@@ -693,36 +709,43 @@
 			<a href="viewblogs" class="btn btn-success btn-block btn-outline">
 				<img
 				src="${pageContext.request.contextPath}/resources/images/blog.png"
-				alt="logo" width="40" height="40">&nbsp <b>Blog</b>
+				alt="blog" width="40" height="40">&nbsp <b>Blog</b>
 			</a>
 		</div>
 		<div class="col-md-4" style="margin-top: 30px">
 
 			<a href="allusers" class="btn btn-success btn-block btn-outline"><img
 				src="${pageContext.request.contextPath}/resources/images/people.png"
-				alt="logo" width="40" height="40">&nbsp <b>Peoples</b></a>
+				alt="people" width="40" height="40">&nbsp <b>Peoples</b></a>
 		</div>
 		<div class="col-md-4" style="margin-top: 30px">
 
 			<a href="friends" class="btn btn-success btn-block btn-outline"><img
 				src="${pageContext.request.contextPath}/resources/images/friend.png"
-				alt="logo" width="40" height="40">&nbsp <b>Friends</b></a>
+				alt="friend" width="40" height="40">&nbsp <b>Friends</b></a>
 		</div>
-		
-			<div class="col-md-4" style="margin-top: 30px">
+
+		<div class="col-md-4" style="margin-top: 30px">
 
 			<a href="talk" class="btn btn-success btn-block btn-outline"><img
 				src="${pageContext.request.contextPath}/resources/images/group-chat.png"
-				alt="logo" width="40" height="40">&nbsp <b>Group Chat</b></a>
+				alt="chat" width="40" height="40">&nbsp <b>Group Chat</b></a>
 		</div>
 		
-		
+		<div class="col-md-4" style="margin-top: 30px">
+
+			<a href="jobs" class="btn btn-success btn-block btn-outline"><img
+				src="${pageContext.request.contextPath}/resources/images/job.png"
+				alt="job" width="40" height="40">&nbsp <b>Jobs</b></a>
+		</div>
+
+
 	</div>
 
 	<div class="container">
 
 		<security:authorize access="hasRole('ROLE_ADMIN')">
-		<div>
+			<div>
 				<h3>
 					<i class="fa fa-user-secret" aria-hidden="true"></i>&nbsp
 					{{userdetails.role}}
@@ -749,6 +772,8 @@
 							<th>Phone</th>
 							<th>City</th>
 							<th>Gender</th>
+							<th>Role</th>
+							<th>State</th>
 							<th></th>
 						</tr>
 					</thead>
@@ -759,8 +784,20 @@
 							<td>{{user.phone}}</td>
 							<td>{{user.city}}</td>
 							<td>{{user.gender}}</td>
+							<td>{{user.role}}</td>
+							<td>{{user.enabled}}</td>
+							<td><button class="btn btn-primary btn-sm"
+									ng-click="enableUser(user.userId)" title="Enable">
+									<i class="fa fa-check-circle-o fa-2x" aria-hidden="true"></i>
+								</button></td>
 							<td><button class="btn btn-danger btn-sm"
-									ng-click="deleteUser(user.userId)">DELETE</button></td>
+									ng-click="disableUser(user.userId)" title="Disable">
+									<i class="fa fa-ban fa-2x" aria-hidden="true"></i>
+								</button></td>
+							<td><button class="btn btn-warning btn-sm"
+									ng-click="makeAdmin(user.userId)" title="Make Admin">
+									<i class="fa fa-user-secret fa-2x" aria-hidden="true"></i>
+								</button></td>
 
 						</tr>
 
@@ -771,9 +808,7 @@
 
 		</security:authorize>
 
-		<div>
-
-		</div>
+		<div></div>
 
 
 

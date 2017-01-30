@@ -63,6 +63,16 @@ public class FriendDAOImpl implements FriendDAO {
 		
 		return no;
 	}
+	
+	public void setOnline(long userId){
+		Session session = sessionFactory.getCurrentSession();
+		session.createQuery("update Friend set isOnline = true where friendId="+userId).executeUpdate();
+	}
+	public void setOffline(long userId){
+		Session session = sessionFactory.getCurrentSession();
+		session.createQuery("update Friend set isOnline = false where friendId="+userId).executeUpdate();
+	}
+
 
 
 	

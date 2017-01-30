@@ -32,8 +32,6 @@ public class RESTUserController {
 	@Autowired
 	UserDAO userdao;
 
-	@Autowired
-	BlogDAO blogdao;
 
 	@Autowired
 	ServletContext context;
@@ -70,11 +68,41 @@ public class RESTUserController {
 
 	}
 
-	@PostMapping("/deleteuser")
-	public ResponseEntity<List<User>> deleteUser(@RequestBody String inputdata) {
+	@PostMapping("admin/disableuser")
+	public ResponseEntity<List<User>> disableUser(@RequestBody String inputdata) {
 		System.out.println(inputdata);
 
-		userdao.deleteUser(Integer.parseInt(inputdata));
+		User user = userdao.getUserById(Integer.parseInt(inputdata));
+		user.setEnabled(false);
+		userdao.updateUser(user);
+
+		List<User> list = userdao.listUser();
+		
+		return new ResponseEntity<List<User>>(list, HttpStatus.OK);
+
+	}
+	
+	@PostMapping("admin/enableuser")
+	public ResponseEntity<List<User>> enableUser(@RequestBody String inputdata) {
+		System.out.println(inputdata);
+
+		User user = userdao.getUserById(Integer.parseInt(inputdata));
+		user.setEnabled(true);
+		userdao.updateUser(user);
+
+		List<User> list = userdao.listUser();
+		
+		return new ResponseEntity<List<User>>(list, HttpStatus.OK);
+
+	}
+	
+	@PostMapping("admin/makeadmin")
+	public ResponseEntity<List<User>> makeAdmin(@RequestBody String inputdata) {
+		System.out.println(inputdata);
+		
+		User user = userdao.getUserById(Integer.parseInt(inputdata));
+		user.setRole("ROLE_ADMIN");
+		userdao.updateUser(user);
 
 		List<User> list = userdao.listUser();
 		return new ResponseEntity<List<User>>(list, HttpStatus.OK);

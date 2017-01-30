@@ -25,9 +25,9 @@ public class UserDAOImpl implements UserDAO {
 		session.save(user);
 	}
 
-	public void deleteUser(int id) {
+	public void deleteUser(User user) {
 		Session session = sessionFactory.getCurrentSession();
-		session.delete(id);
+		session.delete(user);
 	}
 
 	public void updateUser(User user) {

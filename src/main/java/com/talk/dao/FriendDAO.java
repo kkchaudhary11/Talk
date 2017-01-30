@@ -14,4 +14,8 @@ public interface FriendDAO {
 	
 	public int countFriendRequset(long userId);
 	
+	public void setOnline(long userId);
+
+	public void setOffline(long userId);
+	
 }
