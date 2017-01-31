@@ -7,7 +7,7 @@ import com.talk.model.Blog;
 public interface BlogDAO {
 
 	public void addBlog(Blog blog);
-	public void deleteBlog(Blog blog);
+	
 	public Blog getBlogById(int id);
 	//for users	
 	public List<Blog> listBlogs();

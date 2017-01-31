@@ -253,11 +253,14 @@
 					{{user.friendId.gender}}
 					
 				</div>
-				<hr/>
-						
+				
+												 
 						 
-						 <a href="http://localhost:9999/Talk/talk/friendchat/{{user.friendId.userId}}" class="btn btn-success btn-sm"><i class="fa fa-paper-plane-o" aria-hidden="true"></i>&nbsp SEND MESSAGE</a>
 					</div>
+					<div class="panel-footer">
+				<a href="http://localhost:9999/Talk/talk/friendchat/{{user.friendId.userId}}" class="btn btn-success btn-sm" ng-disabled="!user.online" role="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i>&nbsp SEND MESSAGE</a>
+						
+				</div>
 				</div>
 				
 			</div>

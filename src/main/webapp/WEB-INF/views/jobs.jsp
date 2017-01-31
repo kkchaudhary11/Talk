@@ -23,7 +23,18 @@
 				return {
 
 					postJob : function(item) {
-						return $http.post(BASE_URL + 'postjob', item).then(
+						return $http.post(BASE_URL + 'admin/postjob', item).then(
+								function(response) {
+									return response.data;
+								}, function(errResponse) {
+									console.error('Error while sending data');
+									return $q.reject(errResponse);
+								});
+					},
+					
+					
+					applyJob : function(item) {
+						return $http.get(BASE_URL + 'applyjob/'+item).then(
 								function(response) {
 									return response.data;
 								}, function(errResponse) {
@@ -33,7 +44,7 @@
 					},
 
 					getJobs : function() {
-						return $http.get(BASE_URL + 'jobs').then(
+						return $http.get(BASE_URL + 'viewjobs').then(
 								function(response) {
 									return response.data;
 								}, function(errResponse) {
@@ -61,6 +72,24 @@
 					};
 
 					$JobService.postJob($scope.JobInfo).then(
+							function(response) {
+								try {
+									$scope.status = response.status;
+								} catch (e) {
+									$scope.data = [];
+								}
+
+							}, function(errResponse) {
+								console.error('Error while Sending Data.');
+							});
+
+				}
+				
+				//apply job
+				$scope.applyJob = function(jobId) {
+
+					console.log("in the apply job");
+					$JobService.applyJob(jobId).then(
 							function(response) {
 								try {
 									$scope.status = response.status;
@@ -177,19 +206,21 @@
 		<br>
 		<h2>Jobs</h2>
 		<div>
-			<div class="panel-group" ng-show="blogs">
+			<div class="panel-group" ng-show="jobs">
 				<div class="panel panel-default"
-					ng-repeat="blog in blogs | orderBy:'blogdate':true"
+					ng-repeat="job in jobs | orderBy:'postdate':true"
 					style="margin-top: 40px">
 
 					<div class="panel-body">
 						<h3>{{job.title}}</h3>
 						<hr />
-						<p style="text-align: justify">{{job.description}}</p>
+						<span><b>Qualifications:</b>&nbsp {{job.qualification}}</span>
+						<p style="text-align: justify"> <b>Description:</b>&nbsp {{job.description}}</p>
 						<hr />
 						<h5>
 							
-							{{blog.blogdate}}
+							<b>Posted on:</b> &nbsp{{job.postdate | date:"MM/dd/yyyy" }}
+							<button class="btn btn-primary pull-right" ng-Click="applyJob(job.jobId);">Apply</button>
 						</h5>
 					</div>
 				</div>

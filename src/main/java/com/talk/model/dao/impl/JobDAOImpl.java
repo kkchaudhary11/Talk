@@ -10,40 +10,35 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.talk.dao.BlogDAO;
+import com.talk.dao.JobDAO;
 import com.talk.model.Blog;
+import com.talk.model.Job;
 
 @Repository
 @Transactional
 @EnableTransactionManagement
-public class BlogDAOImpl  implements BlogDAO{
+public class JobDAOImpl  implements JobDAO{
 
 	@Autowired
 	SessionFactory sessionFactory;
 	
 	
-	public void addBlog(Blog blog) {
+	public void addJob(Job job) {
 		Session session = sessionFactory.getCurrentSession();
-		session.saveOrUpdate(blog);
+		session.saveOrUpdate(job);
 	}
 
 	
-	
-	public Blog getBlogById(int id) {
+	public Job getJobById(int id) {
 		Session session = sessionFactory.getCurrentSession();
-		Blog blog = (Blog)session.createQuery("from Blog where blogId="+id).getSingleResult();	
-		return blog;
+		Job job = (Job)session.createQuery("from Job where JobId="+id).getSingleResult();	
+		return job;
 	}
 
-
-	public List<Blog> listAllBlogs() {
-		Session session = sessionFactory.getCurrentSession();
-		List<Blog> list = session.createQuery("from Blog").getResultList();	
-		return list;
-	}
 	
-	public List<Blog> listBlogs() {
+	public List<Job> listJobs() {
 		Session session = sessionFactory.getCurrentSession();
-		List<Blog> list = session.createQuery("from Blog where posted="+1).getResultList();	
+		List<Job> list = session.createQuery("from Job where posted="+1).getResultList();	
 		return list;
 	}
 

@@ -29,8 +29,6 @@ public class RESTBlogController {
 	@Autowired
 	BlogDAO blogdao;
 
-	@Autowired
-	ServletContext context;
 
 	@PostMapping("/postblog")
 	public ResponseEntity<String> postBlog(@RequestBody JSONObject data, Principal p) {

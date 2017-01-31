@@ -6,11 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Type;
 
@@ -23,13 +19,7 @@ public final class Job {
 	private String title;
 	private String qualification;
 	@Type(type="text")
-	private String description;
-	
-	
-	@ManyToOne
-	@JoinColumn(name="userId")
-	private User userId;
-	
+	private String description;	
 	
 	private Date postdate;
 	
@@ -38,7 +28,6 @@ public final class Job {
 	//getters and setters
 
 	
-
 	public String getTitle() {
 		return title;
 	}
@@ -78,15 +67,6 @@ public final class Job {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-	public User getUserId() {
-		return userId;
-	}
-
-	public void setUserId(User userId) {
-		this.userId = userId;
-	}
-
 
 	public boolean isPosted() {
 		return posted;
