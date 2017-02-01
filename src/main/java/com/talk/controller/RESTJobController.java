@@ -69,16 +69,26 @@ public class RESTJobController {
 	@GetMapping("/applyjob/{jobId}")
 	public ResponseEntity<String> applyjob(@PathVariable("jobId") long jobId, Principal p){
 		
-		System.out.println("Job ID:"+jobId);
-		User user = userdao.getUserByEmail(p.getName());
 
-		long userId = user.getUserId();
-		System.out.println("User ID:"+userId);
+		System.out.println("Job ID:"+jobId);
+		
+		Job job = jobdao.getJobById(jobId);
+		User user2 = userdao.getUserByEmail(p.getName());
+		
+		JobUser jobUser = new JobUser();
+		
+		jobUser.setJobId(job);
+		jobUser.setUserId(user2);
+		
+		
+		jobuserdao.addJobApplied(jobUser);
 		
 		JSONObject json = new JSONObject();
 
 		json.put("status", "Job is Applied");
 		System.out.println(json.toString());
+		
+		
 
 		return new ResponseEntity<String>(json.toString(), HttpStatus.CREATED);
 	}

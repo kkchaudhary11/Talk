@@ -50,6 +50,15 @@
 								}, function(errResponse) {
 									return $q.reject(errResponse);
 								});
+					},
+					
+					jobsUserApplied : function() {
+						return $http.get(BASE_URL + 'viewjobapplied').then(
+								function(response) {
+									return response.data;
+								}, function(errResponse) {
+									return $q.reject(errResponse);
+								});
 					}
 
 				};
@@ -60,7 +69,7 @@
 			"JobService",
 			function($scope, $JobService) {
 
-				// post the job
+				// post the job [ADMIN]
 
 				$scope.postJob = function() {
 
@@ -85,7 +94,8 @@
 
 				}
 				
-				//apply job
+				//apply for a  job
+				
 				$scope.applyJob = function(jobId) {
 
 					console.log("in the apply job");
@@ -102,8 +112,27 @@
 							});
 
 				}
+				
+				//view  jobs user applied [ADMIN]
+				
+				$scope.jobsUserApplied = function() {
 
-				//list jobs
+					console.log("in the jobs user apply");
+					$JobService.jobsUserApplied().then(
+							function(response) {
+								try {
+									$scope.users = response;
+								} catch (e) {
+									$scope.data = [];
+								}
+
+							}, function(errResponse) {
+								console.error('Error while Sending Data.');
+							});
+
+				}
+
+				//list jobs on page-load
 
 				$JobService.getJobs().then(function(response) {
 
@@ -122,23 +151,36 @@
 
 	<div class="container">
 
-		<div ng-show="status">
-			<p class="alert alert-info">
-				<b>Success!</b>&nbsp{{status}}<br />
-			</p>
-		</div>
+		
 
 		<security:authorize access="hasRole('ROLE_ADMIN')">
 
 			<div class=col-md-12>
 				<div class="col-md-4 col-md-offset-4">
 					<button type="button" class="btn btn-success btn-block"
-						data-toggle="modal" data-target="#myBlog">Create Job</button>
+						data-toggle="modal" data-target="#myJob">Create Job</button>
+						
+					
+					<button type="button" class="btn btn-success btn-block"
+						 ng-click="jobsUserApplied()">View Applied Users</button>
 				</div>
+				
+			</div>
+			
+			<div class="col-md-12" style="margin-top:10px">
+			<div ng-repeat="user in users" >
+			<p class="well well-sm">
+			<span><b>{{user.userId.username}}</b></span>
+			<span><i>({{user.userId.email}})</i></span>
+			<span><i>[PH.{{user.userId.phone}}]</i></span>
+			<b>Applied For </b>
+			<span>{{user.jobId.title}}</span>
+			</p>
+			</div>
 			</div>
 
-			<!-- Modal for cerate blog -->
-			<div class="modal fade" id="myBlog" role="dialog">
+			<!-- Modal for cerate job -->
+			<div class="modal fade" id="myJob" role="dialog">
 				<div class="modal-dialog modal-md">
 					<div class="modal-content">
 						<div class="modal-header">
@@ -200,6 +242,8 @@
 					</div>
 				</div>
 			</div>
+			<br/>
+		
 
 		</security:authorize>
 
@@ -208,7 +252,7 @@
 		<div>
 			<div class="panel-group" ng-show="jobs">
 				<div class="panel panel-default"
-					ng-repeat="job in jobs | orderBy:'postdate':true"
+					ng-repeat="job in jobs"
 					style="margin-top: 40px">
 
 					<div class="panel-body">
@@ -222,7 +266,12 @@
 							<b>Posted on:</b> &nbsp{{job.postdate | date:"MM/dd/yyyy" }}
 							<button class="btn btn-primary pull-right" ng-Click="applyJob(job.jobId);">Apply</button>
 						</h5>
-					</div>
+						<div ng-show="status">
+							<p class="alert alert-info">
+								<b>Success!</b>&nbsp{{status}}<br />
+							</p>
+						</div>
+					</div>					
 				</div>
 			</div>
 		</div>

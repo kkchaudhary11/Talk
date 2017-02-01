@@ -29,7 +29,7 @@ public class JobDAOImpl  implements JobDAO{
 	}
 
 	
-	public Job getJobById(int id) {
+	public Job getJobById(long id) {
 		Session session = sessionFactory.getCurrentSession();
 		Job job = (Job)session.createQuery("from Job where JobId="+id).getSingleResult();	
 		return job;

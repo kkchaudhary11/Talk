@@ -28,5 +28,11 @@ public class JobUserDAOImpl implements JobUserDAO{
 		return list;
 		// TODO Auto-generated method stub
 	}
+	
+	public void addJobApplied(JobUser jobUser){
+		
+		Session session = sessionFactory.getCurrentSession();
+		session.save(jobUser);
+	}
 
 }

@@ -738,6 +738,20 @@
 				src="${pageContext.request.contextPath}/resources/images/job.png"
 				alt="job" width="40" height="40">&nbsp <b>Jobs</b></a>
 		</div>
+		
+		<div class="col-md-4" style="margin-top: 30px">
+
+			<a href="events" class="btn btn-success btn-block btn-outline"><img
+				src="${pageContext.request.contextPath}/resources/images/event.png"
+				alt="event" width="40" height="40">&nbsp <b>Events</b></a>
+		</div>
+		
+			<div class="col-md-4" style="margin-top: 30px">
+
+			<a href="forums" class="btn btn-success btn-block btn-outline"><img
+				src="${pageContext.request.contextPath}/resources/images/forum.png"
+				alt="event" width="40" height="40">&nbsp <b>Forum</b></a>
+		</div>
 
 
 	</div>

@@ -6,8 +6,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="JOB_USER", schema="kkc")
 public class JobUser {
 	
 	@Id @GeneratedValue(strategy=GenerationType.SEQUENCE)

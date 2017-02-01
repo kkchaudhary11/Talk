@@ -163,6 +163,15 @@ public class HomeController {
 		return "jobs";
 		
 	}
+	
+	
+	@RequestMapping("/events")
+	public String Events(){
+		
+		return "events";
+		
+	}
+	
 
 
 }

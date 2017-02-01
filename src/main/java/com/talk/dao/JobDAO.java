@@ -8,7 +8,7 @@ import com.talk.model.Job;
 public interface JobDAO {
 
 	public void addJob(Job job);
-	public Job getJobById(int id);
+	public Job getJobById(long id);
 		
 	public List<Job> listJobs();
 }
