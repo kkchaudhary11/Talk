@@ -68,7 +68,27 @@
 								}, function(errResponse) {
 									return $q.reject(errResponse);
 								});
-					}
+					},
+
+					addBlogData : function(item) {
+						return $http.post(BASE_URL + 'addblogdata', item).then(
+								function(response) {
+									return response.data;
+								}, function(errResponse) {
+									console.error('Error while sending data');
+									return $q.reject(errResponse);
+								});
+					},
+
+					getBlogData : function(item) {
+						return $http.get(BASE_URL + 'getblogdata', item).then(
+								function(response) {
+									return response.data;
+								}, function(errResponse) {
+									console.error('Error while sending data');
+									return $q.reject(errResponse);
+								});
+					},
 
 				};
 			} ]);
@@ -79,6 +99,7 @@
 			function($scope, $BlogService) {
 
 				// post the blog
+				$scope.currentUser = "${currentuser}";
 
 				$scope.postBlog = function() {
 
@@ -144,9 +165,48 @@
 				$BlogService.getBlogs().then(function(response) {
 
 					$scope.blogs = response;
+					$scope.getBlogsData();
 				}, function(errResponse) {
 					console.log('Error fetching Users');
 				});
+
+				//
+				$scope.getBlogsData = function() {
+					$BlogService.getBlogData().then(function(response) {
+
+						$scope.blogsdata = response;
+						console.log($scope.blogsdata);
+					}, function(errResponse) {
+						console.log('Error fetching Users');
+					});
+				}
+
+				//add blog data
+
+				$scope.addBlogData = function() {
+
+					console.log("in the post blog");
+					$scope.UserBlogData = {
+						//id of the selected blog
+						BlogID : $scope.selectedBlog,
+						BlogData : $scope.user.blogData,
+					};
+
+					console.log($scope.UserBlogData);
+
+					$BlogService.addBlogData($scope.UserBlogData).then(
+							function(response) {
+								$scope.status = response.status;
+								$scope.getBlogsData();
+							}, function(errResponse) {
+								console.log('Error fetching Users');
+							});
+				}
+
+				//set the id to current blog
+				$scope.setBlogId = function(blogId) {
+					$scope.selectedBlog = blogId;
+				}
 
 			} ]);
 </script>
@@ -163,6 +223,9 @@
 				<b>Success!</b>&nbsp{{status}}<br />
 			</p>
 		</div>
+		<%-- 	
+		${currentuser} --%>
+
 
 		<security:authorize access="hasRole('ROLE_USER')">
 
@@ -216,8 +279,7 @@
 
 								<div class="modal-footer" style="margin-top: 20px">
 									<input type="submit" ng-click="postBlog()" value="Post"
-										class="btn btn-primary" data-dismiss="modal"
-										ng-disabled="blog.my_blog.$error.required || blog.title.$error.required">
+										class="btn btn-primary" data-dismiss="modal">
 								</div>
 							</form>
 						</div>
@@ -245,7 +307,8 @@
 				<h2 ng-show="allblogs">Approve Blogs</h2>
 
 				<div class="panel-group" ng-show="allblogs">
-					<div class="panel panel-default" ng-repeat="blog in allblogs | orderBy:'blogdate':true"
+					<div class="panel panel-default"
+						ng-repeat="blog in allblogs | orderBy:'blogdate':true"
 						style="margin-top: 40px">
 
 						<div class="panel-body">
@@ -274,14 +337,45 @@
 		<h2>Blogs</h2>
 		<div>
 			<div class="panel-group" ng-show="blogs">
-				<div class="panel panel-default" ng-repeat="blog in blogs | orderBy:'blogdate':true"
+				<!-- from the blog table -->
+				<div class="panel panel-default"
+					ng-repeat="blog in blogs | orderBy:'blogdate':true"
 					style="margin-top: 40px">
 
 					<div class="panel-body">
 						<h3>{{blog.title}}</h3>
-						<hr />
+						
 						<p style="text-align: justify">{{blog.description}}</p>
 						<hr />
+						<!-- From blogData table -->
+						<div ng-repeat="blogdata in blogsdata">
+							<!-- only show the data associated with the creator of blog -->
+							<div
+								ng-if="(blog.userId.userId == blogdata.blogId.userId.userId)">
+								<!-- match the  Blog id to  BlogData id 
+								only show data associated with perticular blog-->
+								<div ng-if="(blog.blogId == blogdata.blogId.blogId)">
+									<div class="well well-sm">
+										<p>{{blogdata.blogData }}</p>
+										<!--check if current user is the creator of blog so that he/she can update/delete blog  -->
+										<div ng-if="currentUser == blog.userId.email">
+											<button class="btn btn-danger btn-sm">Delete</button>
+											<button class="btn btn-primary btn-sm">Update</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+
+						<hr />
+						<!-- check current user with blog creator-->
+						<div ng-if="currentUser == blog.userId.email" class="pull-right">
+							<button type="button" class="btn btn-success btn-sm"
+								ng-click="setBlogId(blog.blogId)" data-toggle="modal"
+								data-target="#addBlogData">Add data</button>
+						</div>
+
 						<h5>
 							<b>Posted By:</b> {{blog.userId.username}} <b>On</b>
 							{{blog.blogdate}}
@@ -289,6 +383,41 @@
 					</div>
 				</div>
 			</div>
+
+
+
+			<!-- Modal for cerate blog data-->
+			<div class="modal fade" id="addBlogData" role="dialog">
+				<div class="modal-dialog modal-md">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title">Add info</h4>
+						</div>
+						<div class="modal-body">
+							<form name="blog" action="#">
+
+
+								<div class="input-group" style="margin-top: 20px">
+									<span class="input-group-addon"><i class="fa fa-pencil"
+										aria-hidden="true"></i></span> <input type="text"
+										class="form-control" name="title" id="blogdata"
+										placeholder="Enter title" ng-model="user.blogData" required>
+
+								</div>
+
+								<div class="modal-footer" style="margin-top: 20px">
+									<input type="submit" ng-click="addBlogData()" value="Post"
+										class="btn btn-primary" data-dismiss="modal">
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+
 		</div>
 	</div>
 

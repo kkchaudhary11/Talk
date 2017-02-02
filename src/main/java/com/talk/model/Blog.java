@@ -21,7 +21,8 @@ public final class Blog {
 	@Id @GeneratedValue(strategy=GenerationType.SEQUENCE)
 	private long blogId;
 	private String title;
-	@Type(type="text")
+	
+	
 	private String description;
 	
 	
@@ -29,7 +30,7 @@ public final class Blog {
 	@JoinColumn(name="userId")
 	private User userId;
 	
-	@Temporal(TemporalType.DATE)
+	
 	private Date blogdate;
 	
 	private boolean posted=false;

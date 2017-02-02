@@ -137,9 +137,10 @@ public class HomeController {
 	}
 	
 	@RequestMapping("/viewblogs")
-	public String Blogs(){
-		
-		return "blogs";
+	public ModelAndView Blogs(Principal p){
+		ModelAndView model = new ModelAndView("blogs");
+		model.addObject("currentuser",p.getName());
+		return model;
 		
 	}
 	

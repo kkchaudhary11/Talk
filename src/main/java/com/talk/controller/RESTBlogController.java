@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.talk.dao.BlogDAO;
+import com.talk.dao.BlogDataDAO;
 import com.talk.dao.UserDAO;
 import com.talk.model.Blog;
+import com.talk.model.BlogData;
 import com.talk.model.User;
 
 @RestController
@@ -28,6 +30,9 @@ public class RESTBlogController {
 
 	@Autowired
 	BlogDAO blogdao;
+	
+	@Autowired
+	BlogDataDAO blogdatadao;
 
 
 	@PostMapping("/postblog")
@@ -124,6 +129,28 @@ public class RESTBlogController {
 
 		return new ResponseEntity<List<Blog>>(list, HttpStatus.OK);
 
+	}
+	
+	@PostMapping("/addblogdata")
+	public void addBlogData(@RequestBody JSONObject data, Principal p){
+		
+		System.out.println(data);
+		BlogData blogData = new BlogData();
+		blogData.setBlogData(data.get("BlogData").toString());
+		Blog b = new Blog();
+		String selectedBlogId = data.get("BlogID").toString();
+		b.setBlogId(Integer.parseInt(selectedBlogId));
+		blogData.setBlogId(b);
+		
+		blogdatadao.addBlogData(blogData);
+	}
+	
+	
+	@GetMapping("/getblogdata")
+	public ResponseEntity<List<BlogData>> getBlogData(){
+		
+		List<BlogData> list = blogdatadao.listBlogData();
+		return new ResponseEntity<List<BlogData>>(list,HttpStatus.OK);
 	}
 
 }
