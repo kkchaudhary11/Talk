@@ -158,6 +158,21 @@ public class RESTFriendController {
 		
 	}
 	
+	@PostMapping("removefriend")
+	public void removeFriend(@RequestBody long friendId,Principal p){
+		System.out.println(friendId);
+		User user = userdao.getUserByEmail(p.getName());
+		long userId = user.getUserId();
+		System.out.println(userId);
+		Friend friend = frienddao.getFriend(userId, friendId);
+		
+		frienddao.removeFriend(friend);
+		
+		Friend friend2 = frienddao.getFriend(friendId,userId);
+		frienddao.removeFriend(friend2);
+		
+	}
+	
 	
 	
 

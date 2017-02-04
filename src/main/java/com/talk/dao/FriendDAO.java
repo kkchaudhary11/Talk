@@ -8,6 +8,7 @@ public interface FriendDAO {
 
 	public void addFriend(Friend friend);
 	public void updateFriend(Friend friend);
+	public void removeFriend(Friend friend);
 	public Friend getFriend(long loggedInUserId, long friendId);
 	public List<Friend> getFriendRequsts(long userId);
 	public List<Friend> listFriends(long userId);

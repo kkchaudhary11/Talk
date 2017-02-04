@@ -31,6 +31,11 @@ public class FriendDAOImpl implements FriendDAO {
 		Session session = sessionFactory.getCurrentSession();
 		session.update(friend);
 	}
+	
+	public void removeFriend(Friend friend){
+		Session session = sessionFactory.getCurrentSession();
+		session.remove(friend);
+	}
 
 	public List<Friend> getFriendRequsts(long userId) {
 		
@@ -58,8 +63,8 @@ public class FriendDAOImpl implements FriendDAO {
 	public int countFriendRequset(long userId){
 		Session session = sessionFactory.getCurrentSession();
 		/*long nod = (Long)session.createQuery("select count(*) from Friend friend where friend.userId=84 and friend.status='NEW'").uniqueResult();*/
-		long nofr = (Long)session.createQuery("select count(*) from Friend where userId="+userId+" and status='NEW'").getSingleResult();
-		int no = (int) (long) nofr;
+		long countfriends = (Long)session.createQuery("select count(*) from Friend where userId="+userId+" and status='NEW'").getSingleResult();
+		int no = (int) (long) countfriends ;
 		
 		return no;
 	}

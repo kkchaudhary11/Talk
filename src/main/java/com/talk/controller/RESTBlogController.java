@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -152,5 +153,26 @@ public class RESTBlogController {
 		List<BlogData> list = blogdatadao.listBlogData();
 		return new ResponseEntity<List<BlogData>>(list,HttpStatus.OK);
 	}
+	
+	@GetMapping("/deleteblogdata/{blogdataid}")
+	public void deleteBlogData(@PathVariable("blogdataid") int blogdataid){
+		System.out.println("Blog Id:"+blogdataid);
+		BlogData blogdata = blogdatadao.getBlogDataById(blogdataid);
+		
+		blogdatadao.deleteBlogData(blogdata);
+			
+	}
+	
+	@PostMapping("/updateblogdata")
+	public void updateBlogData(@RequestBody JSONObject data, Principal p){
+		
+		System.out.println(data);
+		
+		BlogData blogData = blogdatadao.getBlogDataById(Integer.parseInt(data.get("BlogID").toString()));
+			
+		blogData.setBlogData(data.get("UpdatedBlogData").toString());		
+		blogdatadao.addBlogData(blogData);
+	}
+	
 
 }

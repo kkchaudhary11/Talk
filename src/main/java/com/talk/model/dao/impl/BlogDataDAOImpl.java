@@ -24,11 +24,22 @@ public class BlogDataDAOImpl implements BlogDataDAO {
 		Session session = sessionFactory.getCurrentSession();
 		session.saveOrUpdate(blogdata);
 	}
+	
+	public BlogData getBlogDataById(int blogdataid){
+		Session session = sessionFactory.getCurrentSession();
+		BlogData blogData = (BlogData)session.createQuery("from BlogData where BlogDataId="+blogdataid).getSingleResult();
+		return blogData;
+	}
 
 	public List<BlogData> listBlogData() {
 		Session session = sessionFactory.getCurrentSession();
 		List<BlogData> list  = session.createQuery("from BlogData").getResultList();
 		return list;
+	}
+	
+	public void deleteBlogData(BlogData blogdata){
+		Session session = sessionFactory.getCurrentSession();
+		session.delete(blogdata);
 	}
 
 }

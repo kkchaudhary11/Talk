@@ -90,6 +90,25 @@
 								});
 					},
 
+					deleteBlogData : function(item) {
+						return $http.get(BASE_URL + 'deleteblogdata/' + item)
+								.then(function(response) {
+									return response.data;
+								}, function(errResponse) {
+									console.error('Error while sending data');
+									return $q.reject(errResponse);
+								});
+					},
+					updateBlogData : function(item) {
+						return $http.post(BASE_URL + 'updateblogdata', item)
+								.then(function(response) {
+									return response.data;
+								}, function(errResponse) {
+									console.error('Error while sending data');
+									return $q.reject(errResponse);
+								});
+					}
+
 				};
 			} ]);
 
@@ -98,9 +117,25 @@
 			"BlogService",
 			function($scope, $BlogService) {
 
-				// post the blog
+				// edit data
+				$scope.editedItem = {}; 
+
+				$scope.editrow = function($index) {
+					$scope.istrue = true;
+					$scope.$index = $index;
+					angular.copy($scope.blogsdata[$index], $scope.editedItem);
+				}
+
+				/* $scope.save = function() {
+					$scope.istrue = false;
+					angular.copy($scope.editedItem,
+							$scope.blogsdata[$scope.$index])
+				} */
+
+				//current logged-in user email
 				$scope.currentUser = "${currentuser}";
 
+				//post the blog
 				$scope.postBlog = function() {
 
 					console.log("in the post blog");
@@ -170,7 +205,10 @@
 					console.log('Error fetching Users');
 				});
 
-				//
+				/////////////////////
+				
+				//get blogs data
+				
 				$scope.getBlogsData = function() {
 					$BlogService.getBlogData().then(function(response) {
 
@@ -203,7 +241,44 @@
 							});
 				}
 
-				//set the id to current blog
+				//delete blog data
+
+				$scope.deleteBlogData = function(blogDataId) {
+					console.log(blogDataId);
+
+					$BlogService.deleteBlogData(blogDataId).then(
+							function(response) {
+								$scope.status = response.status;
+								$scope.getBlogsData();
+							}, function(errResponse) {
+								console.log('Error fetching Users');
+							});
+				}
+
+				//update blog data
+				
+				$scope.updateBlogData = function(blogId) {
+					$scope.istrue = false;
+
+					console.log("in the edit blog data");
+					$scope.UpdateUserBlogData = {
+						//id of the selected blog data
+						BlogID : $scope.editedItem.blogDataId,
+						UpdatedBlogData : $scope.editedItem.blogData,
+					};
+
+					console.log($scope.UpdateUserBlogData);
+
+					$BlogService.updateBlogData($scope.UpdateUserBlogData)
+							.then(function(response) {
+								$scope.status = response.status;
+								$scope.getBlogsData();
+							}, function(errResponse) {
+								console.log('Error fetching data');
+							});
+				}
+
+				//set the id to current blog used to add data to the blog
 				$scope.setBlogId = function(blogId) {
 					$scope.selectedBlog = blogId;
 				}
@@ -223,9 +298,10 @@
 				<b>Success!</b>&nbsp{{status}}<br />
 			</p>
 		</div>
-		<%-- 	
-		${currentuser} --%>
 
+		<!--
+		Create blog
+	  	-->
 
 		<security:authorize access="hasRole('ROLE_USER')">
 
@@ -279,22 +355,25 @@
 
 								<div class="modal-footer" style="margin-top: 20px">
 									<input type="submit" ng-click="postBlog()" value="Post"
-										class="btn btn-primary" data-dismiss="modal">
+										class="btn btn-primary" data-dismiss="modal"
+										ng-disabled="blog.title.$error.required">
 								</div>
 							</form>
 						</div>
 					</div>
 				</div>
 			</div>
-
 		</security:authorize>
+		
+		<!-- 
+		ADMIN
+		 -->
+		 
 		<security:authorize access="hasRole('ROLE_ADMIN')">
-
 			<div>
-
 				<%-- <security:authorize access="isAuthenticated()">
-   	 authenticated as <security:authentication property="principal.username" /> 
-		</security:authorize> --%>
+   	 			authenticated as <security:authentication property="principal.username" /> 
+				</security:authorize> --%>
 
 				<div class=col-md-12>
 					<div class="col-md-4 col-md-offset-4">
@@ -334,9 +413,16 @@
 
 		</security:authorize>
 		<br>
+		
+		<!-- 
+		List Blogs
+		 -->
+		
 		<h2>Blogs</h2>
+		
 		<div>
 			<div class="panel-group" ng-show="blogs">
+			
 				<!-- from the blog table -->
 				<div class="panel panel-default"
 					ng-repeat="blog in blogs | orderBy:'blogdate':true"
@@ -344,7 +430,9 @@
 
 					<div class="panel-body">
 						<h3>{{blog.title}}</h3>
-						
+						<!-- 	<div ng-if="currentUser == blog.userId.email" class="pull-right">
+								<button class="btn-link">change</button>
+							</div> -->
 						<p style="text-align: justify">{{blog.description}}</p>
 						<hr />
 						<!-- From blogData table -->
@@ -359,8 +447,13 @@
 										<p>{{blogdata.blogData }}</p>
 										<!--check if current user is the creator of blog so that he/she can update/delete blog  -->
 										<div ng-if="currentUser == blog.userId.email">
-											<button class="btn btn-danger btn-sm">Delete</button>
-											<button class="btn btn-primary btn-sm">Update</button>
+											<button class="btn btn-default btn-sm"
+												ng-click="deleteBlogData(blogdata.blogDataId);">Delete</button>
+
+											<button type="button" ng-click="editrow($index)"
+												data-toggle="modal" class="btn btn-default btn-sm"
+												data-target="#updateBlogData">Edit</button>
+
 										</div>
 									</div>
 								</div>
@@ -374,19 +467,23 @@
 							<button type="button" class="btn btn-success btn-sm"
 								ng-click="setBlogId(blog.blogId)" data-toggle="modal"
 								data-target="#addBlogData">Add data</button>
+							<button type="button" class="btn btn-danger btn-sm"
+								ng-click="unpublishBlog(blog.blogId)">Delete Blog</button>
 						</div>
 
 						<h5>
 							<b>Posted By:</b> {{blog.userId.username}} <b>On</b>
-							{{blog.blogdate}}
+							{{blog.blogdate | date:"MM/dd/yyyy"}}
 						</h5>
 					</div>
 				</div>
 			</div>
 
 
-
-			<!-- Modal for cerate blog data-->
+			<!-- 
+			Modal for create blog data 
+			-->
+			
 			<div class="modal fade" id="addBlogData" role="dialog">
 				<div class="modal-dialog modal-md">
 					<div class="modal-content">
@@ -395,20 +492,23 @@
 							<h4 class="modal-title">Add info</h4>
 						</div>
 						<div class="modal-body">
-							<form name="blog" action="#">
+							<form name="addblogdata" action="#">
 
-
-								<div class="input-group" style="margin-top: 20px">
-									<span class="input-group-addon"><i class="fa fa-pencil"
-										aria-hidden="true"></i></span> <input type="text"
-										class="form-control" name="title" id="blogdata"
-										placeholder="Enter title" ng-model="user.blogData" required>
-
+								<div class="form-group"
+									ng-class="{ 'has-error': addblogdata.add_blog_data.$dirty && addblogdata.add_blog_data.$error.required }">
+									<div class="input-group" style="margin-top: 20px">
+										<span class="input-group-addon"><i class="fa fa-pencil"
+											aria-hidden="true"></i></span>
+										<textarea rows="7" class="form-control" name="add_blog_data"
+											id="add_blog_data" placeholder="Enter info"
+											ng-model="user.blogData" required></textarea>
+									</div>
 								</div>
 
 								<div class="modal-footer" style="margin-top: 20px">
 									<input type="submit" ng-click="addBlogData()" value="Post"
-										class="btn btn-primary" data-dismiss="modal">
+										class="btn btn-primary" data-dismiss="modal"
+										ng-disabled="addblogdata.add_blog_data.$error.required">
 								</div>
 							</form>
 						</div>
@@ -416,7 +516,42 @@
 				</div>
 			</div>
 
+			<!-- 
+			Modal for update blog data 
+			-->
+			
+			<div class="modal fade" id="updateBlogData" role="dialog">
+				<div class="modal-dialog modal-md">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title">Edit info</h4>
+						</div>
+						<div class="modal-body">
+							<form name="editblogdata" action="#">
+								<div class="form-group"
+									ng-class="{ 'has-error': editblogdata.edit_blog_data.$dirty && editblogdata.edit_blog_data.$error.required }">
+									<div class="input-group" style="margin-top: 20px">
+										<span class="input-group-addon"><i class="fa fa-pencil"
+											aria-hidden="true"></i></span>
+										<textarea rows="7" class="form-control" name="edit_blog_data"
+											id="edit_blog_data" placeholder="Enter info"
+											ng-model="editedItem.blogData" required></textarea>
+									</div>
+								</div>
 
+								<div class="modal-footer" style="margin-top: 20px">
+									<input type="submit"
+										ng-click="updateBlogData(blogdata.blogDataId)" value="Done"
+										class="btn btn-primary" data-dismiss="modal"
+										ng-disabled="editblogdata.edit_blog_data.$error.required">
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			
 
 		</div>
 	</div>
