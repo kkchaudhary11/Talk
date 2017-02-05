@@ -748,9 +748,9 @@
 		
 			<div class="col-md-4" style="margin-top: 30px">
 
-			<a href="forums" class="btn btn-success btn-block btn-outline"><img
+			<a href="viewforums" class="btn btn-success btn-block btn-outline"><img
 				src="${pageContext.request.contextPath}/resources/images/forum.png"
-				alt="event" width="40" height="40">&nbsp <b>Forum</b></a>
+				alt="forums" width="40" height="40">&nbsp <b>Forum</b></a>
 		</div>
 
 

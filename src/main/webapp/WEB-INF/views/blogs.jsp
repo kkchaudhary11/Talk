@@ -126,12 +126,6 @@
 					angular.copy($scope.blogsdata[$index], $scope.editedItem);
 				}
 
-				/* $scope.save = function() {
-					$scope.istrue = false;
-					angular.copy($scope.editedItem,
-							$scope.blogsdata[$scope.$index])
-				} */
-
 				//current logged-in user email
 				$scope.currentUser = "${currentuser}";
 

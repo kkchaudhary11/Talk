@@ -191,12 +191,6 @@
 			</button>
 
 
-
-			<!-- <div ng-show="temp">
-		no request
-		</div> -->
-
-
 			<div class="panel-group" ng-show="friendrequest">
 				<div class="panel panel-default" ng-repeat="user in friendrequest"
 					style="margin-top: 40px">

@@ -173,6 +173,14 @@ public class HomeController {
 		
 	}
 	
+	@RequestMapping("/viewforums")
+	public ModelAndView Forums(Principal p){
+		ModelAndView model = new ModelAndView("forums");
+		model.addObject("currentuser",p.getName());
+		return model;
+		
+	}
+	
 
 
 }
