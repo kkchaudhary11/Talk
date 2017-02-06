@@ -25,6 +25,8 @@
 		
 		service.postForum = postForum;
 		service.listForum = listForum;
+		service.postComment = postComment;
+		service.listComments = listComments;
 
 		return service;
 		
@@ -40,9 +42,28 @@
 			return $http.get(BASE_URL+"getforums").then(function(response){
 				return response.data;
 			}, function(errResponse){
-				return $q.reject(errResponse)
+				return $q.reject(errResponse);
 			});
 		}
+		
+		function postComment(item){
+			return $http.post(BASE_URL+"postcomment",item).then(function(response){
+				return response.data;
+			}, function(errResponse){
+				return $q.reject(errResponse);
+			});
+		}
+		
+		function listComments(){
+			return $http.get(BASE_URL+"listforumcomments").then(function(response){
+				return response.data;
+			}, function(errResponse){
+				return $q.reject(errResponse);
+			});
+		}
+
+		
+		
 		
 	} 
 
@@ -55,8 +76,8 @@
 		$scope.postComment = postComment;
 		
 		listForum();
-		
-		$scope.comment="hi";	
+		listComments();
+	
 		//post Forum 
 	 	function postForum() {
 			console.log("in the post forum");
@@ -86,17 +107,39 @@
 			});
 		}
 		
+		
+		//post comment
 		function postComment(post){
 			console.log("in the post comment");
 			this.PostComment = {
-					 Comment : post.comment,
-					 Id : post.id,
-					/*  ForumID : forumId,  */
+					  ForumID : $scope.selectedForum,
+					 Comment : post.comment
 				};
 			console.log(this.PostComment);
+			ForumService.postComment(this.PostComment).then(function(response){
+				$scope.status = response;
+				listComments();
+			}, function(errResponse){
+				console.log("error fatching data");
+				$scope.error = "Something went wrong";
+			});
 		}
 		
+		//list Comments
+		function listComments(){
+			console.log("in the list comment");
+			ForumService.listComments().then(function(response){
+				$scope.comments = response; 
+			}, function(errResponse){
+				console.log("error fatching data");
+				$scope.error = "Something went wrong";
+			});
+		}
 		
+		//set the current forum id 
+		$scope.setForumId = function(forumId) {
+			$scope.selectedForum = forumId;
+		}
 		
 		
 
@@ -115,7 +158,7 @@
 			</p>
 		</div>
 		<div ng-show="error">
-			<p class="alert alert-info">
+			<p class="alert alert-danger">
 				<i class="fa fa-exclamation-circle" aria-hidden="true"></i>&nbsp;{{error}}<br />
 			</p>
 		</div>
@@ -187,8 +230,25 @@
 					<div class="panel-body">
 						<h3>{{forum.title}}</h3>
 						<hr>
-						<b>POSTED ON:</b> &nbsp; {{forum.forumdate  | date:"MM/dd/yyyy"}}
+						<b>POSTED ON:</b>  {{forum.forumdate  | date:"MM/dd/yyyy"}} <b>by</b> {{forum.userId.username}}
+						
+						<hr/>
+						
+						
+						<div ng-repeat="comment in comments" >
+						<div ng-if="(forum.forumId == comment.forumId.forumId)" class="well well-sm">
+							
+							<span ng-class="{test: comment.forumId.userId.userId==comment.userId.userId}">
+							{{comment.forumcomment}} <br/>
+						
+							[<b>by</b> {{comment.userId.username}} <b>on</b> {{comment.commentDate  | date:"MM/dd/yyyy 'at' h:mma"}}]
+							</span>
+						</div>
+						</div>
+						
 					</div>
+					
+					
 					
 				<security:authorize access="hasRole('ROLE_USER')">
 					
@@ -196,12 +256,11 @@
 					
 						<form ng-submit="postComment(post);">
 						<div class="input-group">
-							<input type="text" ng-value="forum.forumId" ng-model="post.id">
 							<input type="text"  name="comment" id="comment" class="form-control" ng-model="post.comment">
 					
 							<span class="input-group-btn">
 							 	
-							 	<input type="submit" " class="btn btn-success" value="Comment">
+							 	<input type="submit" ng-click="setForumId(forum.forumId)" class="btn btn-success" value="Comment">
 							</span>
 							</div>
 							

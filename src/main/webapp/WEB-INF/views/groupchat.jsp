@@ -39,7 +39,7 @@
 					<p ng-repeat="message in messages | orderBy:'time':true"
 						class="message well well-sm" style="padding:10px" >
 						<span class="pull-right">{{message.time | date:'h:mma'}}</span>
-						<span ng-class="{self: message.self}" style="font-size:15px">{{message.message}}</span><br />
+						<span ng-class="{test: message.self}" style="font-size:15px">{{message.message}}</span><br />
 						<span ng-hide="message.self">SEND BY : {{message.username}}</span>
 					</p>
 

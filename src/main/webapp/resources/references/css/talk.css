@@ -76,12 +76,12 @@ position: absolute;
     color: #fff;
 }
 
-.custom_message {
+/* .custom_message {
 	background-color: #f7f7f7;
     padding : 10px;
      border: 1px solid #00a652;
     border-radius: 15px;
-}
+} */
 
 .message .self {
 
@@ -92,4 +92,8 @@ position: absolute;
 
 .count.danger {
   color: #a94442;
+}
+
+.test{
+	 font-weight: 600;
 }
